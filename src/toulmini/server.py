@@ -27,7 +27,57 @@ logging.basicConfig(
 logger = logging.getLogger("toulmini")
 
 # === SERVER ===
-mcp = FastMCP("toulmini")
+
+MCP_INSTRUCTIONS = """
+Toulmini is a Logic Harness for rigorous argument analysis using the Toulmin model.
+
+## AUTOMATIC WORKFLOW (Recommended)
+
+**IMPORTANT**: When a user asks you to analyze an argument or question,
+DO NOT stop after each phase. Continue automatically through ALL phases
+unless the user explicitly asks for step-by-step control.
+
+When the user says things like:
+- "Analyze this argument: [claim]"
+- "Is [statement] true?"
+- "Evaluate: [proposition]"
+- "Use Toulmin to analyze: [query]"
+
+You should automatically:
+1. Call `initiate_toulmin_sequence` → Execute the returned prompt → Extract data_json and claim_json
+2. Call `inject_logic_bridge` → Execute the returned prompt → Extract warrant_json and backing_json
+3. Call `stress_test_argument` → Execute the returned prompt → Extract rebuttal_json and qualifier_json
+4. Call `render_verdict` → Execute the returned prompt → Extract verdict_json
+5. Call `format_analysis_report` → Execute the returned prompt → Present the formatted report to user
+
+Each tool returns a PROMPT. You must EXECUTE that prompt to get JSON output,
+then pass the extracted components to the next phase.
+
+## CIRCUIT BREAKERS
+
+The analysis chain will terminate early if:
+- Warrant strength is "weak" or "irrelevant"
+- Backing strength is "weak" or "irrelevant"
+
+If terminated, explain why and present partial results.
+
+## MANUAL STEP-BY-STEP (Only if requested)
+
+If the user explicitly asks for manual control (e.g., "walk me through each step"
+or "let me see each phase"), then pause after each phase for user confirmation.
+
+## QUICK REFERENCE
+
+| Phase | Tool | Extracts |
+|-------|------|----------|
+| 1 | initiate_toulmin_sequence | data, claim |
+| 2 | inject_logic_bridge | warrant, backing |
+| 3 | stress_test_argument | rebuttal, qualifier |
+| 4 | render_verdict | verdict |
+| 5 | format_analysis_report | formatted report |
+"""
+
+mcp = FastMCP("toulmini", instructions=MCP_INSTRUCTIONS)
 
 
 @mcp.tool()
