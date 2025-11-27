@@ -17,8 +17,9 @@ graph TD
     DATA["DATA (Grounds)"] --> CLAIM
     BACKING --> WARRANT
     WARRANT --> CLAIM
-    REBUTTAL --> QUALIFIER
-    QUALIFIER --> VERDICT
+    REBUTTAL --> WARRANT
+    QUALIFIER --> CLAIM
+    CLAIM --> VERDICT
 ```
 
 | Component | Purpose | Example |
