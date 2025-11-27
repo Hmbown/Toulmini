@@ -296,3 +296,13 @@ toulmini/
 ## License
 
 MIT
+
+## Development
+
+### Running Tests
+
+To run the tests, install `pytest` and `mcp[cli]`, then run:
+
+```bash
+PYTHONPATH=src pytest
+```
