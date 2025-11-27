@@ -1,47 +1,49 @@
 import pytest
 from pydantic import ValidationError
 from toulmini.models.components import (
-    Claim, Warrant, Backing, Rebuttal, Verdict, Data, Citation, Qualifier
+    Claim,
+    Warrant,
+    Backing,
+    Rebuttal,
+    Verdict,
+    Data,
+    Citation,
+    Qualifier,
 )
 from toulmini.models.chain import ToulminChain
 
 # --- Helper Objects ---
 valid_citation = Citation(source="Source A", reference="Page 1")
 valid_data = Data(
-    facts=["Fact 1"],
-    citations=[valid_citation],
-    evidence_type="empirical"
+    facts=["Fact 1"], citations=[valid_citation], evidence_type="empirical"
 )
 valid_claim = Claim(
-    statement="This is a valid statement that is long enough.",
-    scope="general"
+    statement="This is a valid statement that is long enough.", scope="general"
 )
 valid_warrant = Warrant(
     principle="If X then Y principle logic that is long enough.",
     logic_type="deductive",
-    strength="strong"
+    strength="strong",
 )
 valid_backing = Backing(
     authority="Authority Name Long Enough",
     citations=[valid_citation],
-    strength="strong"
+    strength="strong",
 )
-valid_rebuttal = Rebuttal(
-    exceptions=["Exception 1"],
-    strength="weak"
-)
+valid_rebuttal = Rebuttal(exceptions=["Exception 1"], strength="weak")
 valid_qualifier = Qualifier(
     degree="probably",
     confidence_pct=80,
-    rationale="Rationale is long enough for validity."
+    rationale="Rationale is long enough for validity.",
 )
 valid_verdict = Verdict(
     status="sustained",
     reasoning="Reasoning is very long and detailed and supports the sustained verdict successfully without contradiction.",
-    final_statement="Final statement."
+    final_statement="Final statement.",
 )
 
 # --- Component Tests ---
+
 
 def test_claim_validation():
     # Valid claim
@@ -57,12 +59,13 @@ def test_claim_validation():
     with pytest.raises(ValidationError):
         Claim(statement="Short", scope="general")
 
+
 def test_warrant_logic_check():
     # Valid warrant
     warrant = Warrant(
         principle="If X then Y principle logic that is long enough.",
         logic_type="deductive",
-        strength="strong"
+        strength="strong",
     )
     warrant.logic_check()  # Should not raise
 
@@ -70,58 +73,55 @@ def test_warrant_logic_check():
     weak_warrant = Warrant(
         principle="If X then Y principle logic that is long enough.",
         logic_type="deductive",
-        strength="weak"
+        strength="weak",
     )
     with pytest.raises(ValueError, match="WARRANT REJECTED"):
         weak_warrant.logic_check()
+
 
 def test_backing_logic_check():
     # Valid backing
     backing = Backing(
         authority="Authority Name Long Enough",
         citations=[valid_citation],
-        strength="strong"
+        strength="strong",
     )
-    backing.logic_check() # Should not raise
+    backing.logic_check()  # Should not raise
 
     # Invalid: weak strength
     weak_backing = Backing(
         authority="Authority Name Long Enough",
         citations=[valid_citation],
-        strength="weak"
+        strength="weak",
     )
     with pytest.raises(ValueError, match="BACKING REJECTED"):
         weak_backing.logic_check()
 
+
 def test_rebuttal_logic_check():
     # Valid rebuttal (weak attack means argument stands)
-    rebuttal = Rebuttal(
-        exceptions=["Exception 1"],
-        strength="weak"
-    )
+    rebuttal = Rebuttal(exceptions=["Exception 1"], strength="weak")
     rebuttal.logic_check()
 
     # Invalid: absolute strength (destroys argument)
-    fatal_rebuttal = Rebuttal(
-        exceptions=["Exception 1"],
-        strength="absolute"
-    )
+    fatal_rebuttal = Rebuttal(exceptions=["Exception 1"], strength="absolute")
     with pytest.raises(ValueError, match="REBUTTAL FATAL"):
         fatal_rebuttal.logic_check()
+
 
 def test_verdict_consistency():
     # Valid sustained
     Verdict(
         status="sustained",
         reasoning="This reasoning supports the claim and explains why it succeeds perfectly well.",
-        final_statement="Final statement."
+        final_statement="Final statement.",
     )
 
     # Valid overruled
     Verdict(
         status="overruled",
         reasoning="This reasoning explains why the claim fails and is rejected completely.",
-        final_statement="Final statement."
+        final_statement="Final statement.",
     )
 
     # Inconsistent: sustained but fails
@@ -129,7 +129,7 @@ def test_verdict_consistency():
         Verdict(
             status="sustained",
             reasoning="This reasoning explains why the claim fails miserably.",
-            final_statement="Final statement."
+            final_statement="Final statement.",
         )
 
     # Inconsistent: overruled but succeeds
@@ -137,10 +137,12 @@ def test_verdict_consistency():
         Verdict(
             status="overruled",
             reasoning="This reasoning explains why the claim succeeds perfectly.",
-            final_statement="Final statement."
+            final_statement="Final statement.",
         )
 
+
 # --- Chain Tests ---
+
 
 def test_chain_completeness():
     chain = ToulminChain(
@@ -151,19 +153,17 @@ def test_chain_completeness():
         backing=valid_backing,
         rebuttal=valid_rebuttal,
         qualifier=valid_qualifier,
-        verdict=valid_verdict
+        verdict=valid_verdict,
     )
     assert chain.is_complete
     assert chain.phase == 4
     chain.run_logic_checks()
 
+
 def test_chain_dependencies():
     # Missing Data for Claim
     with pytest.raises(ValidationError, match="Claim requires Data"):
-        ToulminChain(
-            query="Test",
-            claim=valid_claim
-        )
+        ToulminChain(query="Test", claim=valid_claim)
 
     # Missing Claim for Warrant
     with pytest.raises(ValidationError, match="Warrant requires Claim"):
@@ -171,7 +171,7 @@ def test_chain_dependencies():
             query="Test",
             data=valid_data,
             # no claim
-            warrant=valid_warrant
+            warrant=valid_warrant,
         )
 
     # Missing Warrant for Backing
@@ -181,22 +181,20 @@ def test_chain_dependencies():
             data=valid_data,
             claim=valid_claim,
             # no warrant
-            backing=valid_backing
+            backing=valid_backing,
         )
+
 
 def test_chain_run_logic_checks():
     # Chain with weak warrant
     weak_warrant = Warrant(
         principle="If X then Y principle logic that is long enough.",
         logic_type="deductive",
-        strength="weak"
+        strength="weak",
     )
 
     chain = ToulminChain(
-        query="Test",
-        data=valid_data,
-        claim=valid_claim,
-        warrant=weak_warrant
+        query="Test", data=valid_data, claim=valid_claim, warrant=weak_warrant
     )
 
     # Validation passes (Pydantic doesn't call logic_check automatically on fields unless validator calls it)

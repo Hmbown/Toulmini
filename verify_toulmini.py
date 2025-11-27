@@ -29,7 +29,7 @@ async def main():
             "initiate_toulmin_sequence",
             "inject_logic_bridge",
             "stress_test_argument",
-            "render_verdict"
+            "render_verdict",
         }
         actual_tools = {tool.name for tool in tools}
 
@@ -51,12 +51,11 @@ async def main():
     print("\n[2] Testing Phase 1: initiate_toulmin_sequence...")
     try:
         result = await mcp.call_tool(
-            "initiate_toulmin_sequence",
-            arguments={"query": "Is AI sentient?"}
+            "initiate_toulmin_sequence", arguments={"query": "Is AI sentient?"}
         )
         # Result should be a list of content items
         if result and len(result) > 0:
-            content = result[0].text if hasattr(result[0], 'text') else str(result[0])
+            content = result[0].text if hasattr(result[0], "text") else str(result[0])
             # Check it contains expected prompt elements
             if "PHASE 1" in content and "DATA" in content and "CLAIM" in content:
                 print("    ✓ Phase 1 returns valid prompt structure")
@@ -71,10 +70,9 @@ async def main():
     print("\n[3] Testing error handling (query too short)...")
     try:
         result = await mcp.call_tool(
-            "initiate_toulmin_sequence",
-            arguments={"query": "Hi"}
+            "initiate_toulmin_sequence", arguments={"query": "Hi"}
         )
-        content = result[0].text if hasattr(result[0], 'text') else str(result[0])
+        content = result[0].text if hasattr(result[0], "text") else str(result[0])
         if "QUERY_TOO_SHORT" in content:
             print("    ✓ Short query error handled correctly")
         else:
@@ -87,9 +85,9 @@ async def main():
     try:
         result = await mcp.call_tool(
             "inject_logic_bridge",
-            arguments={"query": "Test", "data_json": "", "claim_json": ""}
+            arguments={"query": "Test", "data_json": "", "claim_json": ""},
         )
-        content = result[0].text if hasattr(result[0], 'text') else str(result[0])
+        content = result[0].text if hasattr(result[0], "text") else str(result[0])
         if "MISSING_PHASE_1_OUTPUT" in content:
             print("    ✓ Missing dependency error handled correctly")
         else:

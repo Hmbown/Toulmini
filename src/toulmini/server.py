@@ -89,11 +89,7 @@ def inject_logic_bridge(query: str, data_json: str, claim_json: str) -> str:
 
 @mcp.tool()
 def stress_test_argument(
-    query: str,
-    data_json: str,
-    claim_json: str,
-    warrant_json: str,
-    backing_json: str
+    query: str, data_json: str, claim_json: str, warrant_json: str, backing_json: str
 ) -> str:
     """
     PHASE 3: Adversarial stress test - Find REBUTTALS and assign QUALIFIER.
@@ -160,9 +156,8 @@ def _validate_logic_bridge(warrant_json: str, backing_json: str) -> str | None:
     except Exception as e:
         logger.error(f"Validation error: {e}")
         return f'{{"error": "VALIDATION_ERROR", "reason": "{str(e)}"}}'
-    
-    return None
 
+    return None
 
 
 @mcp.tool()
@@ -173,7 +168,7 @@ def render_verdict(
     warrant_json: str,
     backing_json: str,
     rebuttal_json: str,
-    qualifier_json: str
+    qualifier_json: str,
 ) -> str:
     """
     PHASE 4: Final verdict - Render judgment on the complete argument chain.
@@ -206,7 +201,14 @@ def render_verdict(
         - If qualifier.confidence_pct < 30 → verdict SHOULD be "overruled" or "remanded"
     """
     logger.info("Phase 4 initiated: Rendering final verdict")
-    required = [data_json, claim_json, warrant_json, backing_json, rebuttal_json, qualifier_json]
+    required = [
+        data_json,
+        claim_json,
+        warrant_json,
+        backing_json,
+        rebuttal_json,
+        qualifier_json,
+    ]
     if not all(required):
         logger.warning("Phase 4 rejected: Incomplete argument chain")
         return '{"error": "INCOMPLETE_CHAIN"}'
@@ -216,15 +218,22 @@ def render_verdict(
         return error_response
 
     return prompt_phase_four(
-        query, data_json, claim_json, warrant_json,
-        backing_json, rebuttal_json, qualifier_json
+        query,
+        data_json,
+        claim_json,
+        warrant_json,
+        backing_json,
+        rebuttal_json,
+        qualifier_json,
     )
 
 
 def main():
     """Run the Toulmini MCP server."""
     logger.info("Toulmini Logic Harness starting...")
-    logger.info("4 tools available: initiate_toulmin_sequence → inject_logic_bridge → stress_test_argument → render_verdict")
+    logger.info(
+        "4 tools available: initiate_toulmin_sequence → inject_logic_bridge → stress_test_argument → render_verdict"
+    )
     mcp.run()
 
 

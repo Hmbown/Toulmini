@@ -37,3 +37,11 @@ jobs:
     - name: Run type checking
       run: |
         uv run mypy src
+
+    - name: Verify package build
+      run: |
+        uv build
+        # Create a fresh virtualenv to test installation
+        uv venv test-env
+        . test-env/bin/activate
+        uv pip install dist/*.whl

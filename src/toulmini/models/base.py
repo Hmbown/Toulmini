@@ -25,7 +25,9 @@ QualifierForce = Literal[
 LogicType = Literal["deductive", "inductive", "abductive"]
 
 # === EVIDENCE TYPES ===
-EvidenceType = Literal["empirical", "statistical", "testimonial", "documentary", "expert"]
+EvidenceType = Literal[
+    "empirical", "statistical", "testimonial", "documentary", "expert"
+]
 
 
 class Citation(BaseModel):

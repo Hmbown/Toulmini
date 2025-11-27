@@ -1,4 +1,9 @@
-from toulmini.server import initiate_toulmin_sequence, inject_logic_bridge, stress_test_argument, render_verdict
+from toulmini.server import (
+    initiate_toulmin_sequence,
+    inject_logic_bridge,
+    stress_test_argument,
+    render_verdict,
+)
 
 # --- Mocks for JSON inputs ---
 # --- Mocks for JSON inputs ---
@@ -9,7 +14,10 @@ WARRANT_JSON = '{"principle": "This principle is definitely longer than twenty c
 # Authority must be min 10 chars
 BACKING_JSON = '{"authority": "Valid Authority Name", "citations": [{"source": "Source", "reference": "Ref"}], "strength": "strong"}'
 REBUTTAL_JSON = '{"exceptions": [], "counterexamples": [], "strength": "weak"}'
-QUALIFIER_JSON = '{"degree": "probably", "confidence_pct": 80, "rationale": "Rationale"}'
+QUALIFIER_JSON = (
+    '{"degree": "probably", "confidence_pct": 80, "rationale": "Rationale"}'
+)
+
 
 def test_initiate_toulmin_sequence():
     # Valid query
@@ -21,12 +29,11 @@ def test_initiate_toulmin_sequence():
     result_error = initiate_toulmin_sequence("Hi")
     assert '{"error": "QUERY_TOO_SHORT"}' in result_error
 
+
 def test_inject_logic_bridge():
     # Valid input
     result = inject_logic_bridge(
-        query="Query",
-        data_json=DATA_JSON,
-        claim_json=CLAIM_JSON
+        query="Query", data_json=DATA_JSON, claim_json=CLAIM_JSON
     )
     assert "PHASE 2: LOGICAL BRIDGE CONSTRUCTION" in result
     assert DATA_JSON in result
@@ -34,11 +41,10 @@ def test_inject_logic_bridge():
 
     # Missing input
     result_error = inject_logic_bridge(
-        query="Query",
-        data_json="",
-        claim_json=CLAIM_JSON
+        query="Query", data_json="", claim_json=CLAIM_JSON
     )
     assert '{"error": "MISSING_PHASE_1_OUTPUT"}' in result_error
+
 
 def test_stress_test_argument():
     # Valid input
@@ -47,7 +53,7 @@ def test_stress_test_argument():
         data_json=DATA_JSON,
         claim_json=CLAIM_JSON,
         warrant_json=WARRANT_JSON,
-        backing_json=BACKING_JSON
+        backing_json=BACKING_JSON,
     )
     assert "PHASE 3: ADVERSARIAL STRESS TEST" in result
     assert WARRANT_JSON in result
@@ -58,10 +64,11 @@ def test_stress_test_argument():
         data_json=DATA_JSON,
         claim_json="",
         warrant_json=WARRANT_JSON,
-        backing_json=BACKING_JSON
+        backing_json=BACKING_JSON,
     )
     assert '{"error": "MISSING_COMPONENTS"' in result_error
     assert "'claim'" in result_error
+
 
 def test_render_verdict():
     # Valid input
@@ -72,7 +79,7 @@ def test_render_verdict():
         warrant_json=WARRANT_JSON,
         backing_json=BACKING_JSON,
         rebuttal_json=REBUTTAL_JSON,
-        qualifier_json=QUALIFIER_JSON
+        qualifier_json=QUALIFIER_JSON,
     )
     assert "PHASE 4: VERDICT" in result
     assert "COMPLETE ARGUMENT CHAIN" in result
@@ -85,6 +92,6 @@ def test_render_verdict():
         warrant_json="",
         backing_json=BACKING_JSON,
         rebuttal_json=REBUTTAL_JSON,
-        qualifier_json=QUALIFIER_JSON
+        qualifier_json=QUALIFIER_JSON,
     )
     assert '{"error": "INCOMPLETE_CHAIN"}' in result_error

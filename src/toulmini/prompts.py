@@ -30,6 +30,7 @@ VIOLATION = TERMINATION."""
 # PHASE 1: DATA + CLAIM
 # =============================================================================
 
+
 def prompt_phase_one(query: str) -> str:
     """PHASE 1: Extract DATA and construct CLAIM. No hedging."""
     return f"""{SYSTEM_DIRECTIVE}
@@ -71,6 +72,7 @@ EMIT JSON. NOTHING ELSE."""
 # =============================================================================
 # PHASE 2: WARRANT + BACKING
 # =============================================================================
+
 
 def prompt_phase_two(query: str, data_json: str, claim_json: str) -> str:
     """PHASE 2: Construct logical bridge. Weak logic = crash."""
@@ -131,12 +133,9 @@ EMIT JSON. NOTHING ELSE."""
 # PHASE 3: REBUTTAL + QUALIFIER
 # =============================================================================
 
+
 def prompt_phase_three(
-    query: str,
-    data_json: str,
-    claim_json: str,
-    warrant_json: str,
-    backing_json: str
+    query: str, data_json: str, claim_json: str, warrant_json: str, backing_json: str
 ) -> str:
     """PHASE 3: Attack the argument. Find the black swans."""
     return f"""{SYSTEM_DIRECTIVE}
@@ -192,6 +191,7 @@ EMIT JSON. NOTHING ELSE."""
 # PHASE 4: VERDICT
 # =============================================================================
 
+
 def prompt_phase_four(
     query: str,
     data_json: str,
@@ -199,7 +199,7 @@ def prompt_phase_four(
     warrant_json: str,
     backing_json: str,
     rebuttal_json: str,
-    qualifier_json: str
+    qualifier_json: str,
 ) -> str:
     """PHASE 4: Render judgment. No appeals."""
     return f"""{SYSTEM_DIRECTIVE}
