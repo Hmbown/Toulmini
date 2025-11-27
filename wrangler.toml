@@ -1,0 +1,4 @@
+name = "toulmini-web"
+compatibility_date = "2025-01-27"
+pages_build_output_dir = "./web"
+

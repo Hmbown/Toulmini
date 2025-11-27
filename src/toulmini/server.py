@@ -132,7 +132,37 @@ def stress_test_argument(
         logger.warning(f"Phase 3 rejected: Missing components {missing}")
         return f'{{"error": "MISSING_COMPONENTS", "missing": {missing}}}'
 
+    # CIRCUIT BREAKER: Validate Warrant and Backing strength
+    if error_response := _validate_logic_bridge(warrant_json, backing_json):
+        return error_response
+
     return prompt_phase_three(query, data_json, claim_json, warrant_json, backing_json)
+
+
+def _validate_logic_bridge(warrant_json: str, backing_json: str) -> str | None:
+    """Helper to validate Warrant and Backing strength. Returns error JSON if failed."""
+    try:
+        # We need to parse the JSON strings into dicts first, but Pydantic's model_validate_json handles strings directly?
+        # The input is a JSON string representing the object.
+        # Let's import the models inside the function to avoid circular imports if any,
+        # though top-level import is better. I'll add top-level imports in a separate edit.
+        from .models.components import Warrant, Backing
+
+        warrant = Warrant.model_validate_json(warrant_json)
+        warrant.logic_check()
+
+        backing = Backing.model_validate_json(backing_json)
+        backing.logic_check()
+
+    except ValueError as e:
+        logger.error(f"CIRCUIT BREAKER TRIGGERED: {str(e)}")
+        return f'{{"error": "TERMINATION_SIGNAL", "reason": "{str(e)}"}}'
+    except Exception as e:
+        logger.error(f"Validation error: {e}")
+        return f'{{"error": "VALIDATION_ERROR", "reason": "{str(e)}"}}'
+    
+    return None
+
 
 
 @mcp.tool()
@@ -180,6 +210,10 @@ def render_verdict(
     if not all(required):
         logger.warning("Phase 4 rejected: Incomplete argument chain")
         return '{"error": "INCOMPLETE_CHAIN"}'
+
+    # CIRCUIT BREAKER: Validate Warrant and Backing strength again (safety net)
+    if error_response := _validate_logic_bridge(warrant_json, backing_json):
+        return error_response
 
     return prompt_phase_four(
         query, data_json, claim_json, warrant_json,

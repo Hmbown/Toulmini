@@ -3,10 +3,13 @@ import json
 from toulmini.server import initiate_toulmin_sequence, inject_logic_bridge, stress_test_argument, render_verdict
 
 # --- Mocks for JSON inputs ---
+# --- Mocks for JSON inputs ---
 DATA_JSON = '{"facts": ["Fact 1"], "citations": [{"source": "S", "reference": "R"}], "evidence_type": "empirical"}'
 CLAIM_JSON = '{"statement": "Statement", "scope": "general"}'
-WARRANT_JSON = '{"principle": "Principle", "logic_type": "deductive", "strength": "strong"}'
-BACKING_JSON = '{"authority": "Authority", "citations": [], "strength": "strong"}'
+# Principle must be min 20 chars
+WARRANT_JSON = '{"principle": "This principle is definitely longer than twenty characters.", "logic_type": "deductive", "strength": "strong"}'
+# Authority must be min 10 chars
+BACKING_JSON = '{"authority": "Valid Authority Name", "citations": [{"source": "Source", "reference": "Ref"}], "strength": "strong"}'
 REBUTTAL_JSON = '{"exceptions": [], "counterexamples": [], "strength": "weak"}'
 QUALIFIER_JSON = '{"degree": "probably", "confidence_pct": 80, "rationale": "Rationale"}'
 

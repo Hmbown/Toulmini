@@ -4,665 +4,127 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toulmini - A Logic Harness for Arguments</title>
-    <meta name="description" content="Automated Toulmin Argumentation for Large Language Models. Forces structured reasoning through 7 components in 4 phases.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-dark: #0a0a0f;
-            --bg-card: #12121a;
-            --text-primary: #f5f5f7;
-            --text-secondary: #8e8e93;
-            --accent: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.3);
-            --border: rgba(255, 255, 255, 0.1);
-            --success: #22c55e;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-dark);
-            color: var(--text-primary);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            background: rgba(10, 10, 15, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .nav-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px 24px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .logo {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            font-weight: 600;
-            letter-spacing: 0.05em;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 24px;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.875rem;
-            font-weight: 500;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .version-badge {
-            background: var(--accent);
-            color: white;
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* Hero Section */
-        .hero {
-            padding: 160px 0 100px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .hero-quote {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
-            font-style: italic;
-            color: var(--text-secondary);
-            margin-bottom: 24px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .hero h1 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: clamp(3rem, 8vw, 5rem);
-            font-weight: 400;
-            line-height: 1.1;
-            margin-bottom: 24px;
-        }
-
-        .hero h1 span {
-            display: block;
-            font-size: 0.5em;
-            color: var(--accent);
-            font-weight: 600;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-        }
-
-        .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 14px 28px;
-            border-radius: 8px;
-            font-weight: 600;
-            text-decoration: none;
-            transition: all 0.2s;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #5457e5;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: var(--text-secondary);
-        }
-
-        /* Process Section */
-        .process {
-            padding: 100px 0;
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        .section-title h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2.5rem;
-            font-weight: 400;
-            margin-bottom: 16px;
-        }
-
-        .section-title p {
-            color: var(--text-secondary);
-            font-size: 1.125rem;
-        }
-
-        .process-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 24px;
-        }
-
-        @media (max-width: 900px) {
-            .process-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 600px) {
-            .process-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .process-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px 24px;
-            text-align: center;
-            transition: all 0.3s;
-        }
-
-        .process-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .process-number {
-            width: 48px;
-            height: 48px;
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            margin: 0 auto 20px;
-        }
-
-        .process-card h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-
-        .process-card .components {
-            color: var(--accent);
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .process-card p {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-        }
-
-        /* Philosopher Section */
-        .philosopher {
-            padding: 100px 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(99, 102, 241, 0.05) 50%, transparent 100%);
-        }
-
-        .philosopher-content {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 60px;
-            align-items: center;
-        }
-
-        @media (max-width: 800px) {
-            .philosopher-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-        }
-
-        .philosopher-image {
-            position: relative;
-        }
-
-        .philosopher-image img {
-            width: 100%;
-            border-radius: 16px;
-            filter: grayscale(100%);
-            transition: filter 0.3s;
-        }
-
-        .philosopher-image:hover img {
-            filter: grayscale(50%);
-        }
-
-        .philosopher-image::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            pointer-events: none;
-        }
-
-        .philosopher-text h2 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 2rem;
-            margin-bottom: 24px;
-        }
-
-        .philosopher-text p {
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-
-        .philosopher-quote {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
-            font-style: italic;
-            color: var(--text-primary);
-            padding: 24px;
-            background: var(--bg-card);
-            border-left: 3px solid var(--accent);
-            border-radius: 0 8px 8px 0;
-            margin-top: 24px;
-        }
-
-        /* Archive Section */
-        .archive {
-            padding: 100px 0;
-        }
-
-        .archive-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .archive-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-
-        .archive-card:hover {
-            border-color: var(--accent);
-        }
-
-        .archive-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 12px;
-        }
-
-        .archive-query {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.25rem;
-        }
-
-        .archive-id {
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 4px 8px;
-            border-radius: 4px;
-        }
-
-        .archive-verdict {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 100px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .verdict-sustained { background: var(--success); color: white; }
-        .verdict-overruled { background: var(--danger); color: white; }
-        .verdict-remanded { background: var(--warning); color: black; }
-
-        .archive-summary {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            line-height: 1.7;
-        }
-
-        .archive-expand {
-            color: var(--accent);
-            font-size: 0.75rem;
-            margin-top: 12px;
-            display: block;
-        }
-
-        /* Footer */
-        footer {
-            padding: 60px 0;
-            border-top: 1px solid var(--border);
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
-            gap: 40px;
-        }
-
-        @media (max-width: 700px) {
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-        }
-
-        .footer-brand h3 {
-            font-family: 'Cormorant Garamond', serif;
-            font-size: 1.5rem;
-            margin-bottom: 8px;
-        }
-
-        .footer-brand p {
-            color: var(--text-secondary);
-            font-size: 0.875rem;
-            font-style: italic;
-        }
-
-        .footer-links h4 {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-        }
-
-        .footer-links ul {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 8px;
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.875rem;
-            transition: color 0.2s;
-        }
-
-        .footer-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .footer-bottom {
-            margin-top: 40px;
-            padding-top: 24px;
-            border-top: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: var(--text-secondary);
-            font-size: 0.75rem;
-        }
-
-        @media (max-width: 700px) {
-            .footer-bottom {
-                flex-direction: column;
-                gap: 8px;
-            }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate {
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.2s; opacity: 0; }
-        .delay-3 { animation-delay: 0.3s; opacity: 0; }
-        .delay-4 { animation-delay: 0.4s; opacity: 0; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav>
-        <div class="nav-content">
-            <div class="logo">TOULMINI</div>
-            <div class="nav-links">
-                <a href="https://github.com/Hmbown/Toulmini" target="_blank">GitHub</a>
-                <a href="https://github.com/Hmbown/Toulmini#readme" target="_blank">Docs</a>
-                <a href="https://pypi.org/project/toulmini/" target="_blank">PyPI</a>
-                <span class="version-badge">v1.0.0</span>
-            </div>
+        <div class="logo">TOULMINI</div>
+        <div class="links">
+            <a href="https://github.com/Hmbown/Toulmini">[GITHUB]</a>
+            <a href="#docs">[DOCS]</a>
         </div>
     </nav>
 
+    <header class="hero">
+        <div class="quote">
+            "The purpose of an argument is not to establish the truth of a conclusion, but to justify the right to hold it."
+        </div>
+        <div class="author">— Stephen Toulmin, <em>The Uses of Argument</em> (1958)</div>
+        
+        <h1>A Logic Harness for Arguments.</h1>
+        <p class="subtitle">Bad logic crashes. Good logic flows.</p>
+        
+        <div class="cta-container">
+            <a href="#quickstart" class="btn-primary">GET STARTED</a>
+            <a href="https://github.com/Hmbown/Toulmini" class="btn-secondary">VIEW ON GITHUB</a>
+        </div>
+    </header>
+
     <main>
-        <section class="hero">
-            <div class="container">
-                <p class="hero-quote animate delay-1">"The purpose of an argument is not to establish the truth of a conclusion, but to justify the right to hold it."</p>
-                <h1 class="animate delay-2">
-                    <span>Logic Harness</span>
-                    Bad Logic<br>Crashes.
-                </h1>
-                <p class="hero-subtitle animate delay-3">Automated Toulmin Argumentation for Large Language Models. 7 components. 4 phases. No hedging.</p>
-                <div class="hero-buttons animate delay-4">
-                    <a href="https://github.com/Hmbown/Toulmini#quick-start" class="btn btn-primary">Get Started</a>
-                    <a href="https://github.com/Hmbown/Toulmini" class="btn btn-secondary">View on GitHub</a>
+        <section id="model">
+            <h2>The Model.</h2>
+            <p class="lead">Six interconnected components. One final verdict.</p>
+            
+            <div class="grid-3">
+                <div class="card">
+                    <h3>DATA</h3>
+                    <p>Raw facts & evidence.</p>
+                </div>
+                <div class="card">
+                    <h3>CLAIM</h3>
+                    <p>The assertion.</p>
+                </div>
+                <div class="card">
+                    <h3>WARRANT</h3>
+                    <p>The logical bridge.</p>
+                </div>
+                <div class="card">
+                    <h3>BACKING</h3>
+                    <p>Authority support.</p>
+                </div>
+                <div class="card">
+                    <h3>REBUTTAL</h3>
+                    <p>The attack vector.</p>
+                </div>
+                <div class="card">
+                    <h3>QUALIFIER</h3>
+                    <p>Degree of certainty.</p>
                 </div>
             </div>
         </section>
 
-        <section class="process">
-            <div class="container">
-                <div class="section-title">
-                    <h2>The Process</h2>
-                    <p>Data. Warrant. Rebuttal. Verdict.</p>
+        <section id="phases">
+            <h2>Four Phases.</h2>
+            
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="mono">01</span>
+                    <h3>initiate_toulmin_sequence</h3>
                 </div>
-                <div class="process-grid">
-                    <div class="process-card">
-                        <div class="process-number">1</div>
-                        <h3>Ground</h3>
-                        <div class="components">DATA + CLAIM</div>
-                        <p>Extract verifiable facts with citations. Construct a falsifiable claim. No hedging allowed.</p>
-                    </div>
-                    <div class="process-card">
-                        <div class="process-number">2</div>
-                        <h3>Bridge</h3>
-                        <div class="components">WARRANT + BACKING</div>
-                        <p>Build the logical connection. Provide authoritative support. Weak backing = chain terminates.</p>
-                    </div>
-                    <div class="process-card">
-                        <div class="process-number">3</div>
-                        <h3>Attack</h3>
-                        <div class="components">REBUTTAL + QUALIFIER</div>
-                        <p>Adversarial stress test. Find every weakness. Assign honest certainty levels.</p>
-                    </div>
-                    <div class="process-card">
-                        <div class="process-number">4</div>
-                        <h3>Judge</h3>
-                        <div class="components">VERDICT</div>
-                        <p>Final judgment. Sustained, overruled, or remanded. No appeals.</p>
-                    </div>
+                <p>Extract DATA. Construct CLAIM. No hedging allowed.</p>
+                <code class="block">→ data + claim JSON</code>
+            </div>
+
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="mono">02</span>
+                    <h3>inject_logic_bridge</h3>
                 </div>
+                <p>Build WARRANT and BACKING. Weak logic triggers the circuit breaker.</p>
+                <code class="block">→ warrant + backing JSON</code>
+            </div>
+
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="mono">03</span>
+                    <h3>stress_test_argument</h3>
+                </div>
+                <p>Adversarial REBUTTAL. Find the black swans.</p>
+                <code class="block">→ rebuttal + qualifier JSON</code>
+            </div>
+
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="mono">04</span>
+                    <h3>render_verdict</h3>
+                </div>
+                <p>Final Judgment. Sustained, Overruled, or Remanded.</p>
+                <code class="block">→ verdict JSON</code>
             </div>
         </section>
 
-        <section class="philosopher">
-            <div class="container">
-                <div class="philosopher-content">
-                    <div class="philosopher-image">
-                        <img src="https://upload.wikimedia.org/wikipedia/en/6/61/Stephen_Toulmin.jpg" alt="Stephen Toulmin" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 300 400%22><rect fill=%22%2312121a%22 width=%22300%22 height=%22400%22/><text fill=%22%238e8e93%22 font-family=%22serif%22 font-size=%2220%22 x=%22150%22 y=%22200%22 text-anchor=%22middle%22>Stephen Toulmin</text></svg>'">
-                    </div>
-                    <div class="philosopher-text">
-                        <h2>The Argumentation Model</h2>
-                        <p>Stephen Edelston Toulmin (1922–2009) was a British philosopher, author, and educator. His 1958 work "The Uses of Argument" introduced a model of practical reasoning that challenged the dominance of formal logic in philosophy.</p>
-                        <p>Toulmin argued that most real-world arguments don't follow the neat patterns of syllogistic logic. Instead, they involve claims supported by data, connected through warrants, backed by authority, qualified by degree of certainty, and vulnerable to rebuttals.</p>
-                        <p>Toulmini applies this model to force LLMs into rigorous, structured reasoning—making uncertainty explicit rather than hidden behind hedging language.</p>
-                        <blockquote class="philosopher-quote">
-                            "Logic is not concerned with how we think, but with how we ought to think if we want to think correctly."
-                        </blockquote>
-                    </div>
-                </div>
+        <section id="quickstart">
+            <h2>Up and Running.</h2>
+            
+            <div class="install-block">
+                <h4>Install</h4>
+                <pre><code>pip install -e .</code></pre>
             </div>
-        </section>
 
-        <section class="archive">
-            <div class="container">
-                <div class="section-title">
-                    <h2>The Archive</h2>
-                    <p>Selected argumentation traces generated by Toulmini.</p>
-                </div>
-                <div class="archive-grid">
-                    <div class="archive-card">
-                        <div class="archive-header">
-                            <span class="archive-query">Would immortality be a curse?</span>
-                            <span class="archive-id">TRACE #001</span>
-                        </div>
-                        <span class="archive-verdict verdict-remanded">REMANDED</span>
-                        <p class="archive-summary">The argument chain presents a coherent case grounded in Terror Management Theory, existentialist philosophy, and the hedonic treadmill phenomenon. However, the strong rebuttals expose a fundamental limitation: all evidence derives from mortal psychology extrapolated to an unprecedented condition. The category error objection and the existence of alternative meaning frameworks create sufficient doubt.</p>
-                        <span class="archive-expand">Click to view full trace →</span>
-                    </div>
-                    <div class="archive-card">
-                        <div class="archive-header">
-                            <span class="archive-query">Is AI-generated art copyright infringement?</span>
-                            <span class="archive-id">TRACE #002</span>
-                        </div>
-                        <span class="archive-verdict verdict-remanded">REMANDED</span>
-                        <p class="archive-summary">Current case law is insufficient to definitively resolve this question. While training on copyrighted works may constitute fair use under transformative use doctrine, the output's similarity to training data creates unresolved liability questions. The warrant connecting "transformative process" to "non-infringing output" lacks judicial backing in the AI context.</p>
-                        <span class="archive-expand">Click to view full trace →</span>
-                    </div>
-                    <div class="archive-card">
-                        <div class="archive-header">
-                            <span class="archive-query">Should nuclear energy be expanded to combat climate change?</span>
-                            <span class="archive-id">TRACE #003</span>
-                        </div>
-                        <span class="archive-verdict verdict-sustained">SUSTAINED</span>
-                        <p class="archive-summary">The data strongly supports nuclear expansion: lowest lifecycle carbon emissions among reliable baseload sources, proven safety record post-Chernobyl, and new reactor designs addressing waste concerns. Rebuttals regarding cost and construction time are valid but do not defeat the core claim. Qualifier: "presumably" (72% confidence).</p>
-                        <span class="archive-expand">Click to view full trace →</span>
-                    </div>
-                </div>
+            <div class="install-block">
+                <h4>Verify</h4>
+                <pre><code>python verify_toulmini.py</code></pre>
             </div>
         </section>
     </main>
 
     <footer>
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-brand">
-                    <h3>Toulmini</h3>
-                    <p>"The purpose of an argument is not to establish the truth of a conclusion, but to justify the right to hold it."</p>
-                </div>
-                <div class="footer-links">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="https://github.com/Hmbown/Toulmini#readme">Documentation</a></li>
-                        <li><a href="https://github.com/Hmbown/Toulmini/tree/main/examples">Examples</a></li>
-                        <li><a href="https://github.com/Hmbown/Hegelion">Hegelion</a></li>
-                    </ul>
-                </div>
-                <div class="footer-links">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="https://github.com/Hmbown/Toulmini/blob/main/LICENSE">MIT License</a></li>
-                        <li><a href="#">Privacy</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <span>&copy; 2025 Shannon Labs</span>
-                <span>v1.0.0</span>
-            </div>
+        <div class="footer-content">
+            <p>Inspired by <a href="https://hegelion-web.pages.dev/">Hegelion</a></p>
+            <p>© 2025 Toulmini</p>
         </div>
     </footer>
 </body>

@@ -94,9 +94,11 @@ You must ONLY construct the logical bridge between DATA and CLAIM.
 
 1. WARRANT: The general principle that connects data to claim.
    Format: "If X, then Y" or "When X, generally Y"
+   CRITICAL: Must be a general rule, NOT a restatement of the Data.
 
 2. BACKING: The authority that validates the warrant.
    Must be statutory, scientific, or expert authority with citations.
+   Distinction: Warrant is the logic; Backing is the support for that logic.
 
 STRENGTH ASSESSMENT (CRITICAL):
 You MUST assess the strength of both WARRANT and BACKING:

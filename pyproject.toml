@@ -18,3 +18,8 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/toulmini"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.1",
+]
