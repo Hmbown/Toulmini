@@ -8,6 +8,18 @@
 
 A Logic Harness for arguments. Forces LLMs into structured, sequential reasoning through Toulmin's argumentation model—7 components, 4 phases. Bad logic crashes. Good logic flows.
 
+## When to Use Toulmini
+
+**Holiday dinner getting heated?** Uncle says something that doesn't quite add up. Instead of arguing, try: *"I wonder what my Logic Harness would say about that."*
+
+Toulmini turns debates into structured inquiry. Instead of getting defensive, invite others on the journey of figuring out what actually makes logical sense—together.
+
+Perfect for:
+- **Family gatherings** — When loved ones hold views that seem illogical, explore *why* instead of fighting
+- **Philosophical questions** — "Would immortality be a curse?" "Is free will an illusion?"
+- **Contested claims** — Force any argument through rigorous logical scrutiny
+- **Self-reflection** — Test your own beliefs before defending them
+
 ## What is Toulmin's Model?
 
 Stephen Toulmin's argumentation model breaks reasoning into six interconnected components (plus a final verdict):
@@ -22,15 +34,15 @@ graph TD
     CLAIM --> VERDICT
 ```
 
-| Component | Purpose | Example |
+| Component | Purpose | Example ("Would immortality be a curse?") |
 | :--- | :--- | :--- |
-| **DATA** | Raw facts/evidence (must be cited) | "Studies show remote workers are 13% more productive" |
-| **CLAIM** | Assertion based only on the data | "Remote work increases productivity" |
-| **WARRANT** | Logical principle connecting data to claim | "If controlled studies show X, then X is likely true" |
-| **BACKING** | Authority supporting the warrant | "Meta-analyses in organizational psychology..." |
-| **REBUTTAL** | Conditions where the warrant fails | "Unless the worker lacks a dedicated workspace..." |
-| **QUALIFIER** | Degree of certainty | "Presumably" / "Probably" / "Certainly" |
-| **VERDICT** | Final synthesis | "SUSTAINED", "OVERRULED", or "REMANDED" |
+| **DATA** | Raw facts/evidence (must be cited) | "Terror Management Theory shows meaning derives from mortality awareness" |
+| **CLAIM** | Assertion based only on the data | "Immortality constitutes a psychological curse" |
+| **WARRANT** | Logical principle connecting data to claim | "If well-being depends on mortality awareness, removing mortality eliminates flourishing" |
+| **BACKING** | Authority supporting the warrant | "Heidegger, Becker, empirical TMT research" |
+| **REBUTTAL** | Conditions where the warrant fails | "Unless meaning can arise from sources unrelated to death awareness" |
+| **QUALIFIER** | Degree of certainty | "Possibly" (45% confidence) |
+| **VERDICT** | Final synthesis | "REMANDED" — insufficient empirical grounding |
 
 ## The 4 Tools
 
@@ -149,6 +161,142 @@ toulmini/
 | `rebuttal.strength == "absolute"` | Verdict must be "overruled" |
 | `qualifier.confidence_pct < 30` | Verdict should be "overruled" or "remanded" |
 | Missing prior phase output | Tool returns error JSON |
+
+## Installation & Configuration
+
+### Prerequisites
+
+- Python 3.10+
+- pip or uv
+
+### Install Toulmini
+
+```bash
+pip install toulmini
+```
+
+Or for development:
+```bash
+git clone https://github.com/Hmbown/Toulmini.git
+cd Toulmini
+pip install -e .
+```
+
+### Configure Your MCP Client
+
+<details>
+<summary><strong>Claude Code (CLI)</strong></summary>
+
+The fastest way to add Toulmini:
+
+```bash
+claude mcp add toulmini --scope user -- python -m toulmini.server
+```
+
+**Verify it's connected:**
+```bash
+claude mcp list
+```
+
+Then in any Claude Code session, type `/mcp` to see Toulmini's status.
+
+**Alternative scopes:**
+- `--scope user` — Available in all your projects
+- `--scope project` — Shared with your team via `.mcp.json`
+- No flag — Local to current project only
+
+</details>
+
+<details>
+<summary><strong>Claude Desktop (macOS/Windows/Linux)</strong></summary>
+
+**1. Find your config file:**
+
+| Platform | Location |
+|----------|----------|
+| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
+| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
+| Linux | `~/.config/Claude/claude_desktop_config.json` |
+
+**2. Add Toulmini to the config:**
+
+```json
+{
+  "mcpServers": {
+    "toulmini": {
+      "command": "python",
+      "args": ["-m", "toulmini.server"]
+    }
+  }
+}
+```
+
+**3. Restart Claude Desktop completely** (not just refresh).
+
+**4. Verify:** Ask Claude to use one of the Toulmini tools, or check the Developer Console.
+
+</details>
+
+<details>
+<summary><strong>Cursor</strong></summary>
+
+**1. Open Cursor Settings** → Features → MCP Servers
+
+**2. Add a new server** with this configuration:
+
+```json
+{
+  "toulmini": {
+    "command": "python",
+    "args": ["-m", "toulmini.server"]
+  }
+}
+```
+
+**3. Save and restart Cursor.**
+
+</details>
+
+<details>
+<summary><strong>Windsurf</strong></summary>
+
+**1. Open Windsurf Settings** → MCP Configuration
+
+**2. Add Toulmini:**
+
+```json
+{
+  "mcpServers": {
+    "toulmini": {
+      "command": "python",
+      "args": ["-m", "toulmini.server"]
+    }
+  }
+}
+```
+
+**3. Restart Windsurf.**
+
+</details>
+
+### Verify Installation
+
+Run the verification script:
+```bash
+python verify_toulmini.py
+```
+
+Or test manually by asking your AI assistant:
+> "Use the initiate_toulmin_sequence tool to analyze: Would immortality be a curse?"
+
+### Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Server not found | Ensure `toulmini` is installed: `pip show toulmini` |
+| Connection failed | Check Python is in your PATH |
+| JSON parse error | Validate your config file syntax |
+| Tools not appearing | Restart your client completely |
 
 ## Inspired By
 

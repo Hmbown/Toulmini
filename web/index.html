@@ -1,167 +1,275 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toulmini - A Logic Harness for Arguments</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
     <nav>
         <div class="logo">TOULMINI</div>
         <div class="links">
             <a href="https://github.com/Hmbown/Toulmini">[GITHUB]</a>
-            <a href="#docs">[DOCS]</a>
-            <a href="https://pypi.org/project/toulmini/">[PYPI]</a>
+            <a href="#quickstart">[SETUP]</a>
+            <a href="#example">[EXAMPLE]</a>
         </div>
     </nav>
 
     <header class="hero">
-        <div class="hero-content">
-            <div class="version-badge">V0.3.0 PUBLIC BETA</div>
-
-            <h1 class="display-title">The Uses<br>of Argument.</h1>
-
-            <div class="hero-description">
-                <div class="bar"></div>
-                <p>Automated Argumentation for Large Language Models.</p>
-            </div>
-
-            <div class="cta-container">
-                <a href="#quickstart" class="btn-primary">GET STARTED</a>
-                <a href="https://github.com/Hmbown/Toulmini" class="btn-secondary">VIEW ON GITHUB</a>
-            </div>
+        <div class="quote">
+            "The purpose of an argument is not to establish the truth of a conclusion, but to justify the right to hold it."
         </div>
+        <div class="author">— Stephen Toulmin, <em>The Uses of Argument</em> (1958)</div>
 
-        <div class="hero-visual">
-            <div class="divider"></div>
-            <div class="geometry-container">
-                <!-- Geometric Diagram: Toulmin Abstract (Data -> Claim with Warrant bridge) -->
-                <svg viewBox="0 0 400 400" class="geometry-svg">
-                    <!-- Data Box -->
-                    <rect x="50" y="150" width="80" height="80" fill="none" stroke="black" stroke-width="2" />
-                    <!-- Claim Box -->
-                    <rect x="270" y="150" width="80" height="80" fill="none" stroke="black" stroke-width="2" />
-                    <!-- Arrow Data -> Claim -->
-                    <line x1="130" y1="190" x2="270" y2="190" stroke="black" stroke-width="2" />
-                    <!-- Warrant Bridge (Triangle pointing up to the line) -->
-                    <path d="M200 250 L200 190" stroke="black" stroke-width="2" />
-                    <rect x="160" y="250" width="80" height="60" fill="none" stroke="black" stroke-width="2" />
-                </svg>
-            </div>
+        <h1>A Logic Harness for Arguments.</h1>
+        <p class="subtitle">Bad logic crashes. Good logic flows.</p>
+
+        <div class="cta-container">
+            <a href="#quickstart" class="btn-primary">GET STARTED</a>
+            <a href="#example" class="btn-secondary">SEE IT IN ACTION</a>
         </div>
     </header>
 
     <main>
-        <div class="section-divider"></div>
-
-        <section id="process">
-            <div class="section-header">
-                <span class="label">THE PROCESS</span>
-                <h2>Construct. Bridge. Critique. Verdict.</h2>
+        <section id="why">
+            <h2>Why Toulmini?</h2>
+            <div class="use-case-block">
+                <p class="lead">Holiday dinner getting heated?</p>
+                <p>Uncle says something that doesn't quite add up. Instead of arguing, try:</p>
+                <blockquote>"I wonder what my Logic Harness would say about that."</blockquote>
+                <p>Toulmini turns debates into structured inquiry. Instead of getting defensive, invite others on the journey of figuring out what actually makes logical sense—together.</p>
             </div>
 
-            <div class="section-divider-thick"></div>
-
-            <div class="dialectics-grid">
-                <div class="dialectic-step">
-                    <div class="step-box">
-                        <h3>GROUND</h3>
-                    </div>
-                    <p class="step-desc">Extract Data & Construct Claim.</p>
+            <div class="grid-2">
+                <div class="card">
+                    <h3>Family Gatherings</h3>
+                    <p>When loved ones hold views that seem illogical, explore <em>why</em> instead of fighting.</p>
                 </div>
-
-                <div class="arrow">→</div>
-
-                <div class="dialectic-step">
-                    <div class="step-box">
-                        <h3>BRIDGE</h3>
-                    </div>
-                    <p class="step-desc">Inject Warrant & Backing.</p>
+                <div class="card">
+                    <h3>Philosophy</h3>
+                    <p>"Would immortality be a curse?" "Is free will an illusion?" Force rigor on the big questions.</p>
                 </div>
-
-                <div class="arrow">→</div>
-
-                <div class="dialectic-step">
-                    <div class="step-box">
-                        <h3>STRESS</h3>
-                    </div>
-                    <p class="step-desc">Adversarial Rebuttal.</p>
+                <div class="card">
+                    <h3>Contested Claims</h3>
+                    <p>Any argument, any topic—put it through the logical wringer.</p>
                 </div>
-
-                <div class="arrow">→</div>
-
-                <div class="dialectic-step">
-                    <div class="step-box filled">
-                        <h3>VERDICT</h3>
-                    </div>
-                    <p class="step-desc">Sustained, Overruled, or Remanded.</p>
+                <div class="card">
+                    <h3>Self-Reflection</h3>
+                    <p>Test your own beliefs before defending them. You might be surprised.</p>
                 </div>
             </div>
         </section>
 
-        <div class="section-divider"></div>
-
         <section id="model">
-            <div class="section-header">
-                <span class="label">THE ARCHITECTURE</span>
-                <h2>The Toulmin Model.</h2>
-            </div>
+            <h2>The Model.</h2>
+            <p class="lead">Six interconnected components. One final verdict.</p>
 
             <div class="grid-3">
                 <div class="card">
-                    <span class="card-num">01</span>
                     <h3>DATA</h3>
                     <p>Raw facts & evidence.</p>
                 </div>
                 <div class="card">
-                    <span class="card-num">02</span>
                     <h3>CLAIM</h3>
                     <p>The assertion.</p>
                 </div>
                 <div class="card">
-                    <span class="card-num">03</span>
                     <h3>WARRANT</h3>
                     <p>The logical bridge.</p>
                 </div>
                 <div class="card">
-                    <span class="card-num">04</span>
                     <h3>BACKING</h3>
                     <p>Authority support.</p>
                 </div>
                 <div class="card">
-                    <span class="card-num">05</span>
                     <h3>REBUTTAL</h3>
                     <p>The attack vector.</p>
                 </div>
                 <div class="card">
-                    <span class="card-num">06</span>
                     <h3>QUALIFIER</h3>
                     <p>Degree of certainty.</p>
                 </div>
+            </div>
+        </section>
+
+        <section id="example">
+            <h2>See It In Action.</h2>
+            <p class="lead">"Would immortality be a curse?"</p>
+
+            <div class="example-flow">
+                <div class="example-phase">
+                    <div class="phase-header">
+                        <span class="mono">PHASE 1</span>
+                        <h3>Data & Claim</h3>
+                    </div>
+                    <div class="example-content">
+                        <p><strong>DATA:</strong> Terror Management Theory shows meaning derives from mortality awareness. Hedonic treadmill research. Literary analysis of immortal beings.</p>
+                        <p><strong>CLAIM:</strong> "Immortality constitutes a psychological curse because it eliminates the temporal scarcity that gives human life meaning."</p>
+                    </div>
+                </div>
+
+                <div class="example-phase">
+                    <div class="phase-header">
+                        <span class="mono">PHASE 2</span>
+                        <h3>Warrant & Backing</h3>
+                    </div>
+                    <div class="example-content">
+                        <p><strong>WARRANT:</strong> If well-being depends on mortality awareness, removing mortality eliminates flourishing.</p>
+                        <p><strong>BACKING:</strong> Heidegger, Becker, empirical TMT research.</p>
+                        <code class="status-good">Strength: STRONG</code>
+                    </div>
+                </div>
+
+                <div class="example-phase">
+                    <div class="phase-header">
+                        <span class="mono">PHASE 3</span>
+                        <h3>Stress Test</h3>
+                    </div>
+                    <div class="example-content">
+                        <p><strong>REBUTTAL:</strong> Category error—mortal psychology cannot predict immortal psychology. Meaning can arise from sources unrelated to death (flow states, creativity, relationships).</p>
+                        <p><strong>QUALIFIER:</strong> "Possibly" — 45% confidence</p>
+                        <code class="status-warning">Rebuttal Strength: STRONG</code>
+                    </div>
+                </div>
+
+                <div class="example-phase verdict-phase">
+                    <div class="phase-header">
+                        <span class="mono">PHASE 4</span>
+                        <h3>Final Verdict</h3>
+                    </div>
+                    <div class="example-content">
+                        <div class="verdict-box">
+                            <span class="verdict-status">REMANDED</span>
+                            <p>The argument chain presents a coherent case. However, strong rebuttals expose a fundamental limitation: all evidence derives from mortal psychology extrapolated to an unprecedented condition.</p>
+                            <p class="verdict-final">"Insufficient empirical grounding to render definitive judgment."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="phases">
+            <h2>Four Phases.</h2>
+
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="mono">01</span>
+                    <h3>initiate_toulmin_sequence</h3>
+                </div>
+                <p>Extract DATA. Construct CLAIM. No hedging allowed.</p>
+                <code class="block">→ data + claim JSON</code>
+            </div>
+
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="mono">02</span>
+                    <h3>inject_logic_bridge</h3>
+                </div>
+                <p>Build WARRANT and BACKING. Weak logic triggers the circuit breaker.</p>
+                <code class="block">→ warrant + backing JSON</code>
+            </div>
+
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="mono">03</span>
+                    <h3>stress_test_argument</h3>
+                </div>
+                <p>Adversarial REBUTTAL. Find the black swans.</p>
+                <code class="block">→ rebuttal + qualifier JSON</code>
+            </div>
+
+            <div class="phase">
+                <div class="phase-header">
+                    <span class="mono">04</span>
+                    <h3>render_verdict</h3>
+                </div>
+                <p>Final Judgment. Sustained, Overruled, or Remanded.</p>
+                <code class="block">→ verdict JSON</code>
+            </div>
+        </section>
+
+        <section id="quickstart">
+            <h2>Up and Running.</h2>
+            <p class="lead">Two commands. That's it.</p>
+
+            <div class="install-block">
+                <h4>1. Install</h4>
+                <pre><code>pip install toulmini</code></pre>
+            </div>
+
+            <div class="install-block">
+                <h4>2. Add to Claude Code</h4>
+                <pre><code>claude mcp add toulmini --scope user -- python -m toulmini.server</code></pre>
+            </div>
+
+            <div class="setup-tabs">
+                <h4>Or configure manually:</h4>
+
+                <div class="tab-group">
+                    <details>
+                        <summary>Claude Desktop</summary>
+                        <div class="tab-content">
+                            <p>Add to your config file:</p>
+                            <p class="mono small">macOS: ~/Library/Application Support/Claude/claude_desktop_config.json</p>
+                            <p class="mono small">Windows: %APPDATA%\Claude\claude_desktop_config.json</p>
+                            <pre><code>{
+  "mcpServers": {
+    "toulmini": {
+      "command": "python",
+      "args": ["-m", "toulmini.server"]
+    }
+  }
+}</code></pre>
+                            <p>Then restart Claude Desktop.</p>
+                        </div>
+                    </details>
+
+                    <details>
+                        <summary>Cursor</summary>
+                        <div class="tab-content">
+                            <p>Settings → Features → MCP Servers</p>
+                            <pre><code>{
+  "toulmini": {
+    "command": "python",
+    "args": ["-m", "toulmini.server"]
+  }
+}</code></pre>
+                        </div>
+                    </details>
+
+                    <details>
+                        <summary>Windsurf</summary>
+                        <div class="tab-content">
+                            <p>Settings → MCP Configuration</p>
+                            <pre><code>{
+  "mcpServers": {
+    "toulmini": {
+      "command": "python",
+      "args": ["-m", "toulmini.server"]
+    }
+  }
+}</code></pre>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <div class="install-block">
+                <h4>3. Test it</h4>
+                <pre><code>Ask your AI: "Use initiate_toulmin_sequence to analyze: Would immortality be a curse?"</code></pre>
             </div>
         </section>
     </main>
 
     <footer>
         <div class="footer-content">
-            <div class="footer-left">
-                <span class="logo-small">TOULMINI</span>
-            </div>
-            <div class="footer-right">
-                <a href="#">[GITHUB]</a>
-                <a href="#">[DOCS]</a>
-                <a href="#">[TWITTER]</a>
-            </div>
+            <p>Part of the <a href="https://hegelion-web.pages.dev/">Shannon Labs</a> family</p>
+            <p>© 2025 Toulmini</p>
         </div>
     </footer>
 </body>
-
 </html>
