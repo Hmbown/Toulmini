@@ -1,9 +1,13 @@
 [project]
 name = "toulmini"
 version = "1.0.0"
-description = "Local MCP server implementing Toulmin's argumentation model"
+description = "Argumentation model: 7 components, 4 phases. Bad logic crashes. Good logic flows."
 readme = "README.md"
 requires-python = ">=3.10"
+
+[project.urls]
+Homepage = "https://toulmini-web.pages.dev/"
+Repository = "https://github.com/Hmbown/Toulmini"
 dependencies = [
     "mcp[cli]>=1.0.0",
     "pydantic>=2.0.0",
