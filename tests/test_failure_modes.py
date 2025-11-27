@@ -1,5 +1,3 @@
-import pytest
-import json
 from toulmini.server import stress_test_argument
 
 def test_weak_warrant_termination():

@@ -1,4 +1,3 @@
-import pytest
 import json
 from toulmini.server import (
     initiate_toulmin_sequence,
