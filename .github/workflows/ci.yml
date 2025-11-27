@@ -28,3 +28,12 @@ jobs:
       run: |
         # Ensure src is in python path or package is installed
         uv run pytest
+
+    - name: Run linting
+      run: |
+        uv run ruff check .
+        uv run ruff format --check .
+
+    - name: Run type checking
+      run: |
+        uv run mypy src

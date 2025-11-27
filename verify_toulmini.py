@@ -7,7 +7,6 @@ Run with: python verify_toulmini.py
 """
 
 import asyncio
-import json
 import sys
 
 from toulmini.server import mcp

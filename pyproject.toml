@@ -27,4 +27,6 @@ packages = ["src/toulmini"]
 [dependency-groups]
 dev = [
     "pytest>=9.0.1",
+    "ruff>=0.1.0",
+    "mypy>=1.0.0",
 ]

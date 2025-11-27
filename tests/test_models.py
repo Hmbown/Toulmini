@@ -111,14 +111,14 @@ def test_rebuttal_logic_check():
 
 def test_verdict_consistency():
     # Valid sustained
-    v1 = Verdict(
+    Verdict(
         status="sustained",
         reasoning="This reasoning supports the claim and explains why it succeeds perfectly well.",
         final_statement="Final statement."
     )
 
     # Valid overruled
-    v2 = Verdict(
+    Verdict(
         status="overruled",
         reasoning="This reasoning explains why the claim fails and is rejected completely.",
         final_statement="Final statement."
