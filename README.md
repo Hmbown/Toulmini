@@ -1,5 +1,11 @@
 # Toulmini
 
+<p align="center">
+  <a href="https://toulmini-web.pages.dev">Website</a> •
+  <a href="https://github.com/Hmbown/Toulmini">GitHub</a> •
+  <a href="https://pypi.org/project/toulmini/">PyPI</a>
+</p>
+
 > *"The purpose of an argument is not to establish the truth of a conclusion, but to justify the right to hold it."*
 > — **Stephen Toulmin**, *The Uses of Argument* (1958)
 
