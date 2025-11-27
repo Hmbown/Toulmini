@@ -5,6 +5,10 @@
     --font-serif: 'EB Garamond', serif;
     --font-sans: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
+    --accent: #1a1a1a;
+    --muted: #666;
+    --success: #2e7d32;
+    --warning: #ed6c02;
 }
 
 * {
@@ -17,7 +21,7 @@ body {
     background-color: var(--bg);
     color: var(--fg);
     font-family: var(--font-sans);
-    line-height: 1.5;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -56,12 +60,31 @@ h3 {
     margin-bottom: 0.5rem;
 }
 
+h4 {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
+}
+
 .mono {
     font-family: var(--font-mono);
 }
 
 .serif {
     font-family: var(--font-serif);
+}
+
+.small {
+    font-size: 0.85rem;
+    color: var(--muted);
+}
+
+.lead {
+    font-size: 1.5rem;
+    font-family: var(--font-serif);
+    margin-bottom: 1.5rem;
 }
 
 /* Layout */
@@ -143,6 +166,12 @@ section {
     text-decoration: none;
 }
 
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
 .grid-3 {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -155,6 +184,130 @@ section {
     box-shadow: 8px 8px 0px 0px var(--fg);
 }
 
+.card h3 {
+    font-family: var(--font-mono);
+}
+
+/* Use Case Section */
+.use-case-block {
+    background: #fafafa;
+    border-left: 4px solid var(--fg);
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+
+.use-case-block p {
+    margin-bottom: 1rem;
+}
+
+.use-case-block blockquote {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-style: italic;
+    margin: 1.5rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--muted);
+}
+
+/* Example Section */
+.example-flow {
+    margin-top: 2rem;
+}
+
+.example-phase {
+    border-left: var(--border);
+    padding: 1.5rem 0 1.5rem 2rem;
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.example-phase::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 1.5rem;
+    width: 10px;
+    height: 10px;
+    background: var(--fg);
+    border-radius: 50%;
+}
+
+.example-phase .phase-header {
+    margin-bottom: 1rem;
+}
+
+.example-phase .phase-header .mono {
+    background: var(--fg);
+    color: var(--bg);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.example-content {
+    background: #fafafa;
+    padding: 1.5rem;
+    border: 1px solid #e0e0e0;
+}
+
+.example-content p {
+    margin-bottom: 0.75rem;
+}
+
+.example-content p:last-child {
+    margin-bottom: 0;
+}
+
+.status-good {
+    display: inline-block;
+    background: var(--success);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.status-warning {
+    display: inline-block;
+    background: var(--warning);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    margin-top: 0.5rem;
+}
+
+.verdict-phase .example-content {
+    background: #f5f5f5;
+}
+
+.verdict-box {
+    text-align: center;
+}
+
+.verdict-status {
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 1.5rem;
+    background: var(--fg);
+    color: var(--bg);
+    padding: 0.5rem 2rem;
+    margin-bottom: 1rem;
+}
+
+.verdict-box p {
+    max-width: 600px;
+    margin: 0 auto 1rem;
+}
+
+.verdict-final {
+    font-family: var(--font-serif);
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--muted);
+}
+
+/* Phases */
 .phase {
     border-left: var(--border);
     padding-left: 2rem;
@@ -182,16 +335,70 @@ code.block {
     font-size: 0.9rem;
 }
 
+/* Install Section */
+.install-block {
+    margin-bottom: 2rem;
+}
+
 pre {
     background: var(--fg);
     color: var(--bg);
     padding: 1.5rem;
     font-family: var(--font-mono);
     overflow-x: auto;
-    margin-bottom: 2rem;
+    margin-bottom: 1rem;
     box-shadow: 8px 8px 0px 0px #666;
+    font-size: 0.9rem;
+    line-height: 1.5;
 }
 
+/* Setup Tabs */
+.setup-tabs {
+    margin: 2rem 0;
+    padding: 2rem;
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+}
+
+.tab-group {
+    margin-top: 1rem;
+}
+
+details {
+    margin-bottom: 0.5rem;
+    border: 1px solid #e0e0e0;
+    background: white;
+}
+
+details summary {
+    padding: 1rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    cursor: pointer;
+    user-select: none;
+}
+
+details summary:hover {
+    background: #f5f5f5;
+}
+
+details[open] summary {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tab-content {
+    padding: 1.5rem;
+}
+
+.tab-content p {
+    margin-bottom: 0.75rem;
+}
+
+.tab-content pre {
+    margin-top: 0.5rem;
+}
+
+/* Footer */
 footer {
     border-top: var(--border);
     padding: 3rem 2rem;
@@ -200,9 +407,35 @@ footer {
     font-size: 0.9rem;
 }
 
+.footer-content p {
+    margin-bottom: 0.5rem;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     h1 { font-size: 2.5rem; }
+    h2 { font-size: 1.75rem; }
     .quote { font-size: 1.5rem; }
     .hero { padding: 4rem 1.5rem; }
+    .lead { font-size: 1.25rem; }
+
+    .btn-primary, .btn-secondary {
+        display: block;
+        margin-right: 0;
+        margin-bottom: 1rem;
+        text-align: center;
+    }
+
+    .example-phase {
+        padding-left: 1.5rem;
+    }
+
+    .card {
+        box-shadow: 4px 4px 0px 0px var(--fg);
+    }
+
+    pre {
+        box-shadow: 4px 4px 0px 0px #666;
+        font-size: 0.8rem;
+    }
 }
