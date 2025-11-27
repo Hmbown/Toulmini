@@ -32,49 +32,6 @@ graph TD
 | **QUALIFIER** | Degree of certainty | "Presumably" / "Probably" / "Certainly" |
 | **VERDICT** | Final synthesis | "SUSTAINED", "OVERRULED", or "REMANDED" |
 
-## Why This Exists
-
-LLMs tend to hedge, compromise, or give "balanced" answers without confronting genuine contradictions. Toulmini forces separation:
-
-*   **No hedging in claims** — qualifiers come later
-*   **No skipping steps** — can't render verdict without rebuttal
-*   **Hard rejection of weak backing** — stops the chain if support is speculative
-*   **Adversarial stress testing** — must find "black swan" edge cases
-
-## Quick Start
-
-### Installation
-
-```bash
-# Clone and install
-git clone https://github.com/Hmbown/Toulmini.git
-cd Toulmini
-
-# With pip
-pip install -e .
-
-# Or with uv (faster)
-uv pip install -e .
-```
-
-### Add to Your MCP Client
-
-*   Claude Code (Recommended)
-*   Claude Desktop
-*   Gemini CLI
-*   Cursor
-*   Windsurf
-
-### Verify Installation
-
-```bash
-# With MCP Inspector
-npx @modelcontextprotocol/inspector python -m toulmini.server
-
-# Or run the built-in verification
-python verify_toulmini.py
-```
-
 ## The 4 Tools
 
 ### Phase 1: `initiate_toulmin_sequence`
@@ -144,6 +101,15 @@ Each phase consists of two distinct steps:
     *   **VERDICT:** "REMANDED" - insufficient empirical grounding
 
 See `examples/` for complete JSON traces.
+
+## Why This Exists
+
+LLMs tend to hedge, compromise, or give "balanced" answers without confronting genuine contradictions. Toulmini forces separation:
+
+*   **No hedging in claims** — qualifiers come later
+*   **No skipping steps** — can't render verdict without rebuttal
+*   **Hard rejection of weak backing** — stops the chain if support is speculative
+*   **Adversarial stress testing** — must find "black swan" edge cases
 
 ## Architectural Constraints
 
