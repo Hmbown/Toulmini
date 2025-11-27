@@ -20,6 +20,40 @@ Perfect for:
 - **Contested claims** — Force any argument through rigorous logical scrutiny
 - **Self-reflection** — Test your own beliefs before defending them
 
+## Key Findings
+
+Testing reveals measurable differences in reasoning quality when using Toulmini versus single-prompt approaches:
+
+<details>
+<summary><strong>Example: "Is remote work more productive?"</strong></summary>
+
+**Raw LLM Response (single prompt):**
+> "Remote work has both advantages and disadvantages. Some studies show increased productivity, while others highlight challenges with collaboration. It depends on the individual, the role, and the company culture. There's no one-size-fits-all answer."
+
+**Toulmini-Structured Response:**
+
+| Component | Output |
+|-----------|--------|
+| **Data** | Stanford study: 13% productivity increase for call center workers; Microsoft: 10% more meetings for remote workers; Gallup: 54% work longer hours |
+| **Claim** | "Remote work increases measurable output for knowledge workers in roles with clearly defined tasks" (scope: limited) |
+| **Warrant** | "If workers have fewer interruptions and more autonomy, and tasks have clear deliverables, then output per hour increases" |
+| **Backing** | Peer-reviewed economics research (Bloom et al., QJE 2015), NBER working papers |
+| **Rebuttal** | Collaboration-heavy roles suffer; junior employees lose mentorship; long-term innovation may differ |
+| **Qualifier** | Probably (65% confidence) |
+| **Verdict** | **SUSTAINED** — with explicit scope limitations |
+
+**Key Difference**: The raw response hedges without committing. Toulmini forces a scoped, falsifiable claim with explicit confidence and acknowledged limitations.
+
+</details>
+
+**Why This Matters:**
+
+- **Single-call approaches** tend toward balanced summaries that hedge competing positions
+- **Multi-phase analysis** (Toulmini) surfaces specific claims, cites actual evidence, and produces actionable verdicts
+- **Circuit breakers** prevent proceeding with weak reasoning—if the backing is speculative, the chain terminates
+
+See the [full documentation](docs/) for more examples and detailed usage guides.
+
 ## What is Toulmin's Model?
 
 Stephen Toulmin's argumentation model breaks reasoning into six interconnected components (plus a final verdict):
