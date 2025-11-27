@@ -57,7 +57,7 @@ OUTPUT SCHEMA:
 {{
   "data": {{
     "facts": ["string"],
-    "citations": [{{"source": "string", "reference": "string"}}],
+    "citations": [{{"source": "string", "reference": "string", "url": "string|null"}}],
     "evidence_type": "empirical|statistical|testimonial|documentary|expert"
   }},
   "claim": {{
@@ -65,6 +65,11 @@ OUTPUT SCHEMA:
     "scope": "universal|general|specific|singular"
   }}
 }}
+
+CITATION URL RULE:
+- Include "url" ONLY if you know the exact URL with certainty.
+- If unsure, set "url": null. NEVER hallucinate URLs.
+- Prefer DOIs for academic papers (e.g., "https://doi.org/10.1234/...").
 
 EMIT JSON. NOTHING ELSE."""
 
@@ -121,10 +126,14 @@ OUTPUT SCHEMA:
   }},
   "backing": {{
     "authority": "string (min 10 chars)",
-    "citations": [{{"source": "string", "reference": "string"}}],
+    "citations": [{{"source": "string", "reference": "string", "url": "string|null"}}],
     "strength": "absolute|strong|weak|irrelevant"
   }}
 }}
+
+CITATION URL RULE:
+- Include "url" ONLY if you know the exact URL with certainty.
+- If unsure, set "url": null. NEVER hallucinate URLs.
 
 EMIT JSON. NOTHING ELSE."""
 
@@ -241,3 +250,105 @@ OUTPUT SCHEMA:
 }}
 
 EMIT JSON. NOTHING ELSE."""
+
+
+# =============================================================================
+# PHASE 5: FORMAT REPORT (Optional)
+# =============================================================================
+
+
+def prompt_format_report(
+    query: str,
+    data_json: str,
+    claim_json: str,
+    warrant_json: str,
+    backing_json: str,
+    rebuttal_json: str,
+    qualifier_json: str,
+    verdict_json: str,
+) -> str:
+    """PHASE 5 (Optional): Format the complete analysis as a readable report."""
+    return f"""You are a report formatter. Transform this Toulmin argument analysis into a clean, readable markdown report.
+
+═══════════════════════════════════════════════════════════════════════════════
+TOULMIN ANALYSIS REPORT
+═══════════════════════════════════════════════════════════════════════════════
+
+QUERY: {query}
+
+RAW ANALYSIS DATA:
+- DATA: {data_json}
+- CLAIM: {claim_json}
+- WARRANT: {warrant_json}
+- BACKING: {backing_json}
+- REBUTTAL: {rebuttal_json}
+- QUALIFIER: {qualifier_json}
+- VERDICT: {verdict_json}
+
+YOUR TASK:
+Generate a well-formatted markdown report with the following structure:
+
+# Toulmin Analysis: [Short version of query]
+
+## Verdict: [SUSTAINED/OVERRULED/REMANDED] [appropriate emoji]
+
+> [One-sentence final statement from verdict]
+
+---
+
+## The Claim
+[The claim statement, formatted nicely]
+
+**Scope**: [scope] | **Confidence**: [X]%
+
+---
+
+## Evidence (Data)
+[List each fact as a bullet point]
+
+### Sources
+[For each citation, format as:]
+- **[Source]**: [Reference] [If URL exists, add as markdown link]
+
+---
+
+## Logical Bridge
+
+### Warrant
+> [The warrant principle in a blockquote]
+
+**Logic Type**: [type] | **Strength**: [strength]
+
+### Backing
+[The backing authority statement]
+
+**Sources**: [List backing citations with links if available]
+
+---
+
+## Stress Test
+
+### Rebuttals Found
+[List each exception as a numbered item]
+
+### Counterexamples
+[List counterexamples if any, or "None identified"]
+
+**Rebuttal Strength**: [strength]
+
+---
+
+## Confidence Assessment
+**Degree**: [qualifier degree] | **Confidence**: [X]%
+
+[Qualifier rationale]
+
+---
+
+## Final Reasoning
+[The full verdict reasoning]
+
+---
+*Analysis generated using the Toulmin argumentation model*
+
+OUTPUT THE MARKDOWN REPORT. Nothing else."""

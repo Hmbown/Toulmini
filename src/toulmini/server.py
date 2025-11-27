@@ -15,6 +15,7 @@ from .prompts import (
     prompt_phase_two,
     prompt_phase_three,
     prompt_phase_four,
+    prompt_format_report,
 )
 
 # === LOGGING (stderr only - never stdout for STDIO servers) ===
@@ -228,11 +229,69 @@ def render_verdict(
     )
 
 
+@mcp.tool()
+def format_analysis_report(
+    query: str,
+    data_json: str,
+    claim_json: str,
+    warrant_json: str,
+    backing_json: str,
+    rebuttal_json: str,
+    qualifier_json: str,
+    verdict_json: str,
+) -> str:
+    """
+    PHASE 5 (Optional): Format the complete analysis as a readable markdown report.
+
+    This is an OPTIONAL tool to call after render_verdict (Phase 4).
+    It transforms all the JSON outputs into a nicely formatted, human-readable report.
+
+    Args:
+        query: Original query string
+        data_json: The "data" object from Phase 1 as JSON string
+        claim_json: The "claim" object from Phase 1 as JSON string
+        warrant_json: The "warrant" object from Phase 2 as JSON string
+        backing_json: The "backing" object from Phase 2 as JSON string
+        rebuttal_json: The "rebuttal" object from Phase 3 as JSON string
+        qualifier_json: The "qualifier" object from Phase 3 as JSON string
+        verdict_json: The "verdict" object from Phase 4 as JSON string
+
+    Returns:
+        A prompt that will generate a well-formatted markdown report summarizing
+        the entire Toulmin analysis with proper headings, sections, and styling.
+    """
+    logger.info("Phase 5 initiated: Formatting analysis report")
+    required = [
+        data_json,
+        claim_json,
+        warrant_json,
+        backing_json,
+        rebuttal_json,
+        qualifier_json,
+        verdict_json,
+    ]
+    if not all(required):
+        logger.warning("Phase 5 rejected: Incomplete argument chain")
+        return '{"error": "INCOMPLETE_CHAIN"}'
+
+    return prompt_format_report(
+        query,
+        data_json,
+        claim_json,
+        warrant_json,
+        backing_json,
+        rebuttal_json,
+        qualifier_json,
+        verdict_json,
+    )
+
+
 def main():
     """Run the Toulmini MCP server."""
     logger.info("Toulmini Logic Harness starting...")
     logger.info(
-        "4 tools available: initiate_toulmin_sequence → inject_logic_bridge → stress_test_argument → render_verdict"
+        "5 tools available: initiate_toulmin_sequence → inject_logic_bridge → "
+        "stress_test_argument → render_verdict → format_analysis_report (optional)"
     )
     mcp.run()
 

@@ -37,3 +37,7 @@ class Citation(BaseModel):
 
     source: str = Field(..., min_length=1)
     reference: str = Field(..., min_length=1)
+    url: str | None = Field(
+        default=None,
+        description="URL to source (only if known with certainty, never hallucinate)",
+    )

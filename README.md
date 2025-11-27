@@ -78,7 +78,7 @@ graph TD
 | **QUALIFIER** | Degree of certainty | "Possibly" (45% confidence) |
 | **VERDICT** | Final synthesis | "REMANDED" — insufficient empirical grounding |
 
-## The 4 Tools
+## The 5 Tools
 
 ### Phase 1: `initiate_toulmin_sequence`
 
@@ -113,6 +113,15 @@ Final judgment on the complete 6-part chain.
 *   **Output:** Structured prompt → JSON with verdict
 
 Verdicts: **SUSTAINED** | **OVERRULED** | **REMANDED**
+
+### Phase 5: `format_analysis_report` (Optional)
+
+Transforms the complete analysis into a readable markdown report.
+
+*   **Input:** All 7 component JSONs (including verdict) + `query`
+*   **Output:** Structured prompt → Human-readable markdown report
+
+Use this after `render_verdict` to get a nicely formatted summary with headings, sections, and proper styling.
 
 ## Execution Flow (The "Toulmin Loop")
 
@@ -157,6 +166,20 @@ LLMs tend to hedge, compromise, or give "balanced" answers without confronting g
 *   **Hard rejection of weak backing** — stops the chain if support is speculative
 *   **Adversarial stress testing** — must find "black swan" edge cases
 
+## Limitations
+
+### Citation Reliability
+
+Toulmini asks LLMs to provide citations with sources and references. However, **without integrated web search, citations are drawn from the LLM's training data** and may be:
+
+- **Outdated** — Training data has a cutoff date
+- **Hallucinated** — LLMs can fabricate plausible-sounding citations
+- **Incomplete** — URLs may be missing or incorrect
+
+**For reliable citations**, pair Toulmini with an LLM that has web search capabilities (e.g., Claude with web search, GPT with browsing). The prompts ask for URLs only "if known with certainty" to minimize hallucination, but this is not foolproof.
+
+**Bottom line**: Treat citations as *leads to investigate*, not verified sources. Always verify important references independently.
+
 ## Architectural Constraints
 
 | Constraint | Enforcement |
@@ -178,7 +201,7 @@ toulmini/
 └── src/toulmini/
     ├── __init__.py
     ├── server.py           # MCP entry point (FastMCP)
-    ├── prompts.py          # 4 JSON-forcing prompt templates
+    ├── prompts.py          # 5 prompt templates (4 JSON-forcing + 1 report formatter)
     └── models/
         ├── __init__.py
         ├── base.py         # Citation, Literal types

@@ -3,6 +3,7 @@ from toulmini.server import (
     inject_logic_bridge,
     stress_test_argument,
     render_verdict,
+    format_analysis_report,
 )
 
 # --- Mocks for JSON inputs ---
@@ -17,6 +18,7 @@ REBUTTAL_JSON = '{"exceptions": [], "counterexamples": [], "strength": "weak"}'
 QUALIFIER_JSON = (
     '{"degree": "probably", "confidence_pct": 80, "rationale": "Rationale"}'
 )
+VERDICT_JSON = '{"status": "sustained", "reasoning": "The argument holds because the evidence supports the claim with strong backing.", "final_statement": "Claim is validated."}'
 
 
 def test_initiate_toulmin_sequence():
@@ -93,5 +95,35 @@ def test_render_verdict():
         backing_json=BACKING_JSON,
         rebuttal_json=REBUTTAL_JSON,
         qualifier_json=QUALIFIER_JSON,
+    )
+    assert '{"error": "INCOMPLETE_CHAIN"}' in result_error
+
+
+def test_format_analysis_report():
+    # Valid input
+    result = format_analysis_report(
+        query="Query",
+        data_json=DATA_JSON,
+        claim_json=CLAIM_JSON,
+        warrant_json=WARRANT_JSON,
+        backing_json=BACKING_JSON,
+        rebuttal_json=REBUTTAL_JSON,
+        qualifier_json=QUALIFIER_JSON,
+        verdict_json=VERDICT_JSON,
+    )
+    assert "TOULMIN ANALYSIS REPORT" in result
+    assert "# Toulmin Analysis:" in result
+    assert "## Verdict:" in result
+
+    # Incomplete chain
+    result_error = format_analysis_report(
+        query="Query",
+        data_json=DATA_JSON,
+        claim_json=CLAIM_JSON,
+        warrant_json=WARRANT_JSON,
+        backing_json=BACKING_JSON,
+        rebuttal_json=REBUTTAL_JSON,
+        qualifier_json=QUALIFIER_JSON,
+        verdict_json="",
     )
     assert '{"error": "INCOMPLETE_CHAIN"}' in result_error
