@@ -35,7 +35,9 @@ a:hover {
 }
 
 /* Typography */
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-family: var(--font-sans);
     font-weight: 800;
     text-transform: uppercase;
@@ -101,6 +103,67 @@ nav {
     margin-left: 1.5rem;
 }
 
+/* Philosophy */
+.philosophy-container {
+    display: flex;
+    gap: 4rem;
+    align-items: flex-start;
+}
+
+.philosophy-content {
+    flex: 2;
+}
+
+.philosophy-image {
+    flex: 1;
+    max-width: 300px;
+}
+
+.philosophy-image img {
+    width: 100%;
+    height: auto;
+    filter: grayscale(100%) contrast(1.2);
+    border: var(--border);
+    box-shadow: 8px 8px 0px 0px var(--fg);
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.caption {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    display: block;
+    text-align: right;
+}
+
+.philosophy-content .lead {
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+    border-left: var(--border-thick);
+    padding-left: 1.5rem;
+}
+
+.philosophy-content p {
+    font-family: var(--font-sans);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+    .philosophy-container {
+        flex-direction: column-reverse;
+    }
+
+    .philosophy-image {
+        max-width: 100%;
+        margin-bottom: 2rem;
+    }
+}
+
 .hero {
     padding: 6rem 2rem;
     max-width: 1200px;
@@ -139,7 +202,8 @@ section {
 }
 
 /* Components */
-.btn-primary, .btn-secondary {
+.btn-primary,
+.btn-secondary {
     display: inline-block;
     padding: 1rem 2rem;
     font-family: var(--font-mono);
@@ -413,13 +477,28 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
-    h1 { font-size: 2.5rem; }
-    h2 { font-size: 1.75rem; }
-    .quote { font-size: 1.5rem; }
-    .hero { padding: 4rem 1.5rem; }
-    .lead { font-size: 1.25rem; }
+    h1 {
+        font-size: 2.5rem;
+    }
 
-    .btn-primary, .btn-secondary {
+    h2 {
+        font-size: 1.75rem;
+    }
+
+    .quote {
+        font-size: 1.5rem;
+    }
+
+    .hero {
+        padding: 4rem 1.5rem;
+    }
+
+    .lead {
+        font-size: 1.25rem;
+    }
+
+    .btn-primary,
+    .btn-secondary {
         display: block;
         margin-right: 0;
         margin-bottom: 1rem;
