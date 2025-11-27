@@ -14,7 +14,7 @@ Stephen Toulmin's argumentation model breaks reasoning into six interconnected c
 
 ```mermaid
 graph TD
-    DATA[DATA (Grounds)] --> CLAIM
+    DATA["DATA (Grounds)"] --> CLAIM
     BACKING --> WARRANT
     WARRANT --> CLAIM
     REBUTTAL --> QUALIFIER
