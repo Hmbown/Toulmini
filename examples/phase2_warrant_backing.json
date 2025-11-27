@@ -1,0 +1,16 @@
+{
+  "warrant": {
+    "principle": "If psychological well-being depends on temporal scarcity and mortality awareness to generate meaning, then the removal of mortality eliminates the foundational conditions for sustained psychological flourishing",
+    "logic_type": "deductive",
+    "strength": "strong"
+  },
+  "backing": {
+    "authority": "Existentialist philosophy and empirical psychology establish that meaning-making is contingent upon awareness of finitude; Terror Management Theory empirically demonstrates that mortality salience drives value-affirming behavior and purpose",
+    "citations": [
+      {"source": "Being and Time", "reference": "Martin Heidegger (1927)"},
+      {"source": "The Denial of Death", "reference": "Ernest Becker (1973)"},
+      {"source": "Terror Management Theory: Empirical Research", "reference": "Pyszczynski, Greenberg & Solomon (2015)"}
+    ],
+    "strength": "strong"
+  }
+}

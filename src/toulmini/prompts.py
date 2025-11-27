@@ -2,7 +2,7 @@
 PROMPT TEMPLATES: The Soul of Toulmini.
 
 These are not polite requests. These are DIRECTIVES.
-The LLM is a Logic Engine. It compiles arguments or crashes.
+The LLM is harnessed as a Logic Engine. It structures arguments or crashes.
 """
 
 # =============================================================================

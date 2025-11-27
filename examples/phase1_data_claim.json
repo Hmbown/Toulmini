@@ -1,0 +1,21 @@
+{
+  "data": {
+    "facts": [
+      "Psychological studies show humans derive meaning from finite time horizons and mortality awareness",
+      "The hedonic treadmill phenomenon demonstrates that humans adapt to positive changes, returning to baseline happiness levels",
+      "Social bonds are strengthened by shared mortality and generational succession",
+      "Historical and literary analysis consistently portrays immortal beings as suffering from ennui, detachment, and loss of purpose"
+    ],
+    "citations": [
+      {"source": "Terror Management Theory", "reference": "Greenberg, Solomon & Pyszczynski (1986)"},
+      {"source": "Hedonic Adaptation", "reference": "Brickman & Campbell (1971)"},
+      {"source": "Mortality Salience Research", "reference": "Burke, Martens & Faucher (2010)"},
+      {"source": "The Makropulos Case", "reference": "Bernard Williams (1973), Problems of the Self"}
+    ],
+    "evidence_type": "documentary"
+  },
+  "claim": {
+    "statement": "Immortality constitutes a psychological curse because it eliminates the temporal scarcity that gives human life meaning and purpose",
+    "scope": "general"
+  }
+}
