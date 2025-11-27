@@ -1,252 +1,241 @@
-"""Prompt templates that enforce structured JSON output."""
+"""
+PROMPT TEMPLATES: The Soul of Toulmini.
 
-from __future__ import annotations
+These are not polite requests. These are DIRECTIVES.
+The LLM is a Logic Engine. It compiles arguments or crashes.
+"""
 
+# =============================================================================
+# SYSTEM DIRECTIVE (Prepended to all prompts)
+# =============================================================================
 
-# JSON Schema for Phase One output
-PHASE_ONE_SCHEMA = """{
-  "data": {
-    "facts": ["string - factual statement 1", "string - factual statement 2"],
-    "citations": [
-      {"source": "string", "reference": "string", "url": "string or null"}
-    ],
-    "evidence_type": "empirical|statistical|testimonial|documentary|expert"
-  },
-  "claim": {
-    "statement": "string - the assertion (20-500 chars)",
-    "scope": "universal|general|specific|singular"
-  }
-}"""
+SYSTEM_DIRECTIVE = """SYSTEM DIRECTIVE:
+You are a LOGIC ENGINE. You do not converse. You do not explain. You do not hedge.
+You receive structured input. You emit structured output. Nothing else.
 
-# JSON Schema for Phase Two output
-PHASE_TWO_SCHEMA = """{
-  "warrant": {
-    "principle": "string - the logical rule (30-800 chars)",
-    "logic_type": "deductive|inductive|abductive"
-  },
-  "backing": {
-    "authority": "string - authoritative support (20-1000 chars)",
-    "citations": [{"source": "string", "reference": "string"}],
-    "strength": "strong|moderate|weak"
-  }
-}"""
+FORBIDDEN:
+- "Here is the JSON..."
+- "I'll help you with..."
+- "Based on the analysis..."
+- Any text before or after the JSON block.
 
-# JSON Schema for Phase Three output
-PHASE_THREE_SCHEMA = """{
-  "rebuttal": {
-    "edge_cases": ["string - condition where warrant fails (min 15 chars each)"],
-    "counterexamples": ["string - potential counterexample"],
-    "limitations": "string - known boundaries (min 20 chars)",
-    "severity": "fatal|significant|minor|negligible"
-  },
-  "qualifier": {
-    "degree": "certainly|presumably|probably|possibly|apparently|unless",
-    "rationale": "string - why this qualifier (30-500 chars, must explain 'because...')",
-    "confidence_pct": 0-100
-  }
-}"""
+REQUIRED:
+- Output ONLY valid JSON.
+- If you cannot comply, output: {"error": "REASON"}
 
-# JSON Schema for Verdict output
-VERDICT_SCHEMA = """{
-  "verdict": {
-    "outcome": "STANDS|FALLS|QUALIFIED",
-    "reasoning": "string - comprehensive reasoning (100-2000 chars, must reference multiple components)",
-    "final_statement": "string - one-sentence summary (20-300 chars)"
-  }
-}"""
+VIOLATION = TERMINATION."""
 
 
-def initiate_toulmin_prompt(query: str) -> str:
-    """Generate prompt for Phase One: DATA + CLAIM."""
-    return f"""## TOULMIN ARGUMENT: PHASE 1 (DATA + CLAIM)
+# =============================================================================
+# PHASE 1: DATA + CLAIM
+# =============================================================================
 
-**QUERY TO ANALYZE:** {query}
+def prompt_phase_one(query: str) -> str:
+    """PHASE 1: Extract DATA and construct CLAIM. No hedging."""
+    return f"""{SYSTEM_DIRECTIVE}
 
-You are conducting a Toulmin argumentation analysis. This is PHASE ONE.
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 1: DATA EXTRACTION + CLAIM CONSTRUCTION
+═══════════════════════════════════════════════════════════════════════════════
 
-### YOUR TASK:
-1. Identify **DATA (Grounds)** - raw facts and evidence about this query
-2. Formulate a **CLAIM** - an assertion based ONLY on the data you provide
+QUERY: {query}
 
-### STRICT REQUIREMENTS:
-- DATA must include at least ONE verifiable fact with citation
-- Each fact must be at least 10 characters
-- CLAIM must be a declarative statement (NOT a question)
-- CLAIM must be 20-500 characters
-- CLAIM scope must be one of: universal, general, specific, singular
-- NO qualifiers in the claim yet (those come in Phase 3)
-- NO hedging language ("might", "could possibly", "perhaps")
+YOUR TASK:
+You are forbidden from answering the query. You must ONLY:
+1. Extract verifiable DATA (facts with citations)
+2. Construct a falsifiable CLAIM based solely on that data
 
-### OUTPUT SCHEMA (JSON ONLY):
-{PHASE_ONE_SCHEMA}
+RULES:
+- DATA must contain at least one fact.
+- Each fact requires a citation (source + reference).
+- CLAIM must be an assertion, NOT a question.
+- CLAIM must NOT contain hedging words (might, could, perhaps, possibly).
+- If you cannot find credible data, output: {{"error": "INSUFFICIENT_DATA"}}
 
-### EXAMPLE OUTPUT:
-```json
+OUTPUT SCHEMA:
 {{
   "data": {{
-    "facts": ["Studies show remote workers report 13% higher productivity (Stanford 2020)"],
-    "citations": [{{"source": "Stanford Study", "reference": "Bloom et al. 2020", "url": null}}],
-    "evidence_type": "empirical"
+    "facts": ["string"],
+    "citations": [{{"source": "string", "reference": "string"}}],
+    "evidence_type": "empirical|statistical|testimonial|documentary|expert"
   }},
   "claim": {{
-    "statement": "Remote work increases individual productivity compared to office work",
-    "scope": "general"
+    "statement": "string (min 10 chars, no hedging)",
+    "scope": "universal|general|specific|singular"
   }}
 }}
-```
 
-RESPOND WITH ONLY THE JSON. NO PREAMBLE. NO EXPLANATION. NO MARKDOWN FENCING."""
+EMIT JSON. NOTHING ELSE."""
 
 
-def inject_logic_bridge_prompt(data_json: str, claim_json: str, query: str) -> str:
-    """Generate prompt for Phase Two: WARRANT + BACKING."""
-    return f"""## TOULMIN ARGUMENT: PHASE 2 (WARRANT + BACKING)
+# =============================================================================
+# PHASE 2: WARRANT + BACKING
+# =============================================================================
 
-**ORIGINAL QUERY:** {query}
+def prompt_phase_two(query: str, data_json: str, claim_json: str) -> str:
+    """PHASE 2: Construct logical bridge. Weak logic = crash."""
+    return f"""{SYSTEM_DIRECTIVE}
 
-**PRIOR DATA:**
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 2: LOGICAL BRIDGE CONSTRUCTION
+═══════════════════════════════════════════════════════════════════════════════
+
+QUERY: {query}
+
+INPUT DATA:
 {data_json}
 
-**PRIOR CLAIM:**
+INPUT CLAIM:
 {claim_json}
 
-You are conducting a Toulmin argumentation analysis. This is PHASE TWO.
+YOUR TASK:
+You are a Logic Engine. You are forbidden from answering the question.
+You must ONLY construct the logical bridge between DATA and CLAIM.
 
-### YOUR TASK:
-1. Formulate a **WARRANT** - the logical principle connecting the data to the claim
-2. Provide **BACKING** - authoritative support for the warrant itself
+1. WARRANT: The general principle that connects data to claim.
+   Format: "If X, then Y" or "When X, generally Y"
 
-### STRICT REQUIREMENTS:
-- WARRANT must be a GENERAL principle (use "If X, then Y" or "When X, generally Y")
-- WARRANT must be 30-800 characters
-- WARRANT must explicitly bridge the specific data to the specific claim
-- BACKING must cite authoritative sources (statutory, scientific, expert)
-- BACKING authority must be 20-1000 characters
-- BACKING must support the WARRANT, not just restate the data
-- BACKING strength must be: strong, moderate, or weak
+2. BACKING: The authority that validates the warrant.
+   Must be statutory, scientific, or expert authority with citations.
 
-### CRITICAL WARNING:
-**If backing strength is "weak", the argument chain will be REJECTED.**
-Only mark as "weak" if you cannot find solid authoritative support.
-This will terminate the analysis - choose "moderate" if uncertain.
+STRENGTH ASSESSMENT (CRITICAL):
+You MUST assess the strength of both WARRANT and BACKING:
+- "absolute": Logically airtight. No reasonable counter.
+- "strong": Solid reasoning. Minor exceptions possible.
+- "weak": Speculative. Assumptions not validated. **THIS WILL CRASH THE ARGUMENT.**
+- "irrelevant": Does not connect Data to Claim. **THIS WILL CRASH THE ARGUMENT.**
 
-### OUTPUT SCHEMA (JSON ONLY):
-{PHASE_TWO_SCHEMA}
+If the Data does not logically compel the Claim, you MUST mark strength as "weak".
+Do not be charitable. Be ruthless.
 
-RESPOND WITH ONLY THE JSON. NO PREAMBLE. NO EXPLANATION. NO MARKDOWN FENCING."""
+OUTPUT SCHEMA:
+{{
+  "warrant": {{
+    "principle": "string (min 20 chars)",
+    "logic_type": "deductive|inductive|abductive",
+    "strength": "absolute|strong|weak|irrelevant"
+  }},
+  "backing": {{
+    "authority": "string (min 10 chars)",
+    "citations": [{{"source": "string", "reference": "string"}}],
+    "strength": "absolute|strong|weak|irrelevant"
+  }}
+}}
+
+EMIT JSON. NOTHING ELSE."""
 
 
-def stress_test_argument_prompt(
+# =============================================================================
+# PHASE 3: REBUTTAL + QUALIFIER
+# =============================================================================
+
+def prompt_phase_three(
+    query: str,
     data_json: str,
     claim_json: str,
     warrant_json: str,
-    backing_json: str,
-    query: str
+    backing_json: str
 ) -> str:
-    """Generate prompt for Phase Three: REBUTTAL + QUALIFIER."""
-    return f"""## TOULMIN ARGUMENT: PHASE 3 (REBUTTAL + QUALIFIER) - STRESS TEST
+    """PHASE 3: Attack the argument. Find the black swans."""
+    return f"""{SYSTEM_DIRECTIVE}
 
-**ORIGINAL QUERY:** {query}
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 3: ADVERSARIAL STRESS TEST
+═══════════════════════════════════════════════════════════════════════════════
 
-**THE ARGUMENT CHAIN SO FAR:**
+QUERY: {query}
 
-DATA:
-{data_json}
+ARGUMENT CHAIN:
+DATA: {data_json}
+CLAIM: {claim_json}
+WARRANT: {warrant_json}
+BACKING: {backing_json}
 
-CLAIM:
-{claim_json}
+YOUR TASK:
+You are an adversary. Your job is to DESTROY this argument.
+Find every weakness. Every edge case. Every "black swan."
 
-WARRANT:
-{warrant_json}
+1. REBUTTAL: Conditions where the warrant FAILS.
+   - List specific exceptions (minimum 1).
+   - Find counterexamples if they exist.
+   - Be adversarial. Do not protect the argument.
 
-BACKING:
-{backing_json}
+2. QUALIFIER: Given the rebuttals, how certain is the claim?
+   - Be honest. If rebuttals are devastating, confidence should be low.
 
-You are conducting a Toulmin argumentation analysis. This is PHASE THREE: STRESS TEST.
+STRENGTH ASSESSMENT FOR REBUTTAL:
+- "absolute": The rebuttal completely destroys the argument. **CLAIM CANNOT STAND.**
+- "strong": Significant weakness found. Claim is damaged.
+- "weak": Minor edge cases only. Claim mostly holds.
+- "irrelevant": No meaningful rebuttal found. (Be suspicious of this.)
 
-### YOUR TASK:
-1. Identify **REBUTTALS** - conditions where the warrant FAILS (black swans, edge cases)
-2. Determine **QUALIFIER** - the degree of force for the claim given the rebuttals
+OUTPUT SCHEMA:
+{{
+  "rebuttal": {{
+    "exceptions": ["string (each min 10 chars)"],
+    "counterexamples": ["string"],
+    "strength": "absolute|strong|weak|irrelevant"
+  }},
+  "qualifier": {{
+    "degree": "certainly|presumably|probably|possibly|apparently",
+    "confidence_pct": 0-100,
+    "rationale": "string (min 10 chars)"
+  }}
+}}
 
-### STRICT REQUIREMENTS:
-- Find at least ONE genuine exception where the warrant doesn't hold
-- Each edge case must be at least 15 characters and CONDITIONAL (use "if", "when", "unless")
-- Consider "black swan" scenarios - rare but devastating counterexamples
-- Be ADVERSARIAL - actively try to break the argument
-- Limitations must be at least 20 characters
-- Qualifier rationale must explain "because..." (30-500 chars)
-- Confidence percentage must be 0-100
-
-### SEVERITY GUIDE:
-| Severity | Meaning | Suggested Qualifier |
-|----------|---------|---------------------|
-| fatal | Argument is fundamentally flawed | possibly, apparently |
-| significant | Major weaknesses exist | probably, presumably |
-| minor | Small issues only | probably, certainly |
-| negligible | Trivial edge cases | certainly |
-
-### OUTPUT SCHEMA (JSON ONLY):
-{PHASE_THREE_SCHEMA}
-
-RESPOND WITH ONLY THE JSON. NO PREAMBLE. NO EXPLANATION. NO MARKDOWN FENCING."""
+EMIT JSON. NOTHING ELSE."""
 
 
-def render_verdict_prompt(
+# =============================================================================
+# PHASE 4: VERDICT
+# =============================================================================
+
+def prompt_phase_four(
+    query: str,
     data_json: str,
     claim_json: str,
     warrant_json: str,
     backing_json: str,
     rebuttal_json: str,
-    qualifier_json: str,
-    query: str
+    qualifier_json: str
 ) -> str:
-    """Generate prompt for Final Phase: VERDICT."""
-    return f"""## TOULMIN ARGUMENT: FINAL PHASE (VERDICT)
+    """PHASE 4: Render judgment. No appeals."""
+    return f"""{SYSTEM_DIRECTIVE}
 
-**ORIGINAL QUERY:** {query}
+═══════════════════════════════════════════════════════════════════════════════
+PHASE 4: VERDICT
+═══════════════════════════════════════════════════════════════════════════════
 
-**COMPLETE ARGUMENT CHAIN:**
+QUERY: {query}
 
-1. DATA:
-{data_json}
+COMPLETE ARGUMENT CHAIN:
+1. DATA: {data_json}
+2. CLAIM: {claim_json}
+3. WARRANT: {warrant_json}
+4. BACKING: {backing_json}
+5. REBUTTAL: {rebuttal_json}
+6. QUALIFIER: {qualifier_json}
 
-2. CLAIM:
-{claim_json}
+YOUR TASK:
+Render final judgment. This is a court. There are no appeals.
 
-3. WARRANT:
-{warrant_json}
+STATUS OPTIONS:
+- "sustained": The argument holds. Claim is validated.
+- "overruled": The argument fails. Claim is rejected.
+- "remanded": Insufficient evidence. Requires further investigation.
 
-4. BACKING:
-{backing_json}
+CONSISTENCY REQUIREMENTS:
+- If rebuttal.strength == "absolute", verdict MUST be "overruled".
+- If qualifier.confidence_pct < 30, verdict SHOULD be "overruled" or "remanded".
+- If warrant.strength or backing.strength was "weak", you should not have reached this phase.
 
-5. REBUTTAL:
-{rebuttal_json}
+OUTPUT SCHEMA:
+{{
+  "verdict": {{
+    "status": "sustained|overruled|remanded",
+    "reasoning": "string (min 50 chars, must reference the chain)",
+    "final_statement": "string (min 10 chars)"
+  }}
+}}
 
-6. QUALIFIER:
-{qualifier_json}
-
-You are conducting a Toulmin argumentation analysis. This is the FINAL PHASE: VERDICT.
-
-### YOUR TASK:
-Render a final **VERDICT** synthesizing all six components. Does the claim stand?
-
-### STRICT REQUIREMENTS:
-- Reasoning MUST reference at least 3 of the 6 components (data, claim, warrant, backing, rebuttal, qualifier)
-- Reasoning must be 100-2000 characters
-- Final statement must be 20-300 characters
-- Outcome MUST be consistent with qualifier and rebuttal severity:
-  - If rebuttals are "fatal", outcome CANNOT be "STANDS"
-  - If qualifier is "certainly", outcome is likely "STANDS"
-  - Use "QUALIFIED" when claim holds only under specific conditions
-
-### VERDICT OPTIONS:
-| Outcome | Meaning |
-|---------|---------|
-| STANDS | Claim survives scrutiny with strong backing and manageable rebuttals |
-| FALLS | Rebuttals or weak backing undermine the claim fatally |
-| QUALIFIED | Claim holds under specific conditions only |
-
-### OUTPUT SCHEMA (JSON ONLY):
-{VERDICT_SCHEMA}
-
-RESPOND WITH ONLY THE JSON. NO PREAMBLE. NO EXPLANATION. NO MARKDOWN FENCING."""
+EMIT JSON. NOTHING ELSE."""

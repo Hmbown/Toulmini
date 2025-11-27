@@ -1,44 +1,37 @@
-"""Base types and shared definitions for Toulmin models."""
+"""Base types for Toulmin models. Strict. Opinionated."""
 
-from __future__ import annotations
-from typing import Literal, Optional
+from typing import Literal
 from pydantic import BaseModel, Field, ConfigDict
 
 
-# Qualifier values - degree of force for the argument
-QualifierValue = Literal[
-    "certainly",      # Absolute certainty
-    "presumably",     # Strong presumption
-    "probably",       # High probability
-    "possibly",       # Moderate possibility
-    "apparently",     # Based on appearances
-    "unless",         # Conditional
+# === STRENGTH LEVELS ===
+# Used by Backing, Rebuttal, Warrant
+StrengthLevel = Literal["absolute", "strong", "weak", "irrelevant"]
+
+# === VERDICT STATUS ===
+# Legal terminology: the argument's fate
+VerdictStatus = Literal["sustained", "overruled", "remanded"]
+
+# === QUALIFIER FORCE ===
+QualifierForce = Literal[
+    "certainly",
+    "presumably",
+    "probably",
+    "possibly",
+    "apparently",
 ]
 
-# Verdict outcomes
-VerdictOutcome = Literal["STANDS", "FALLS", "QUALIFIED"]
-
-# Backing strength levels
-BackingStrength = Literal["strong", "moderate", "weak"]
-
-# Logic types for warrants
+# === LOGIC TYPES ===
 LogicType = Literal["deductive", "inductive", "abductive"]
 
-# Evidence types for data
+# === EVIDENCE TYPES ===
 EvidenceType = Literal["empirical", "statistical", "testimonial", "documentary", "expert"]
-
-# Rebuttal severity levels
-RebuttalSeverity = Literal["fatal", "significant", "minor", "negligible"]
 
 
 class Citation(BaseModel):
-    """A citation for evidence or backing."""
+    """A citation. No citation = no credibility."""
 
-    model_config = ConfigDict(frozen=True)
+    model_config = ConfigDict(frozen=True, extra="forbid")
 
-    source: str = Field(..., min_length=1, description="Source name or identifier")
-    reference: str = Field(..., min_length=1, description="Specific reference or quote")
-    url: Optional[str] = Field(None, description="URL if available")
-
-    def __str__(self) -> str:
-        return f"[{self.source}] {self.reference}"
+    source: str = Field(..., min_length=1)
+    reference: str = Field(..., min_length=1)

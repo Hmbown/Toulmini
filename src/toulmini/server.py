@@ -1,173 +1,142 @@
-"""Toulmini MCP Server - Toulmin Argumentation Model."""
+"""
+Toulmini MCP Server.
 
-from __future__ import annotations
-import json
+A Logic Compiler for arguments. Bad logic = crash.
+"""
 
 from mcp.server.fastmcp import FastMCP
 
-from .tools import (
-    initiate_toulmin_sequence,
-    inject_logic_bridge,
-    stress_test_argument,
-    render_verdict,
+from .prompts import (
+    prompt_phase_one,
+    prompt_phase_two,
+    prompt_phase_three,
+    prompt_phase_four,
 )
-from .exceptions import ToulminiError
 
-
-# Initialize FastMCP server
+# === SERVER ===
 mcp = FastMCP("toulmini")
 
 
 @mcp.tool()
-def initiate_toulmin_sequence_tool(query: str) -> str:
+def initiate_toulmin_sequence(query: str) -> str:
     """
-    Start a Toulmin analysis. Phase 1: Generate DATA and CLAIM.
+    PHASE 1: Begin Toulmin analysis.
 
-    This tool initiates a 4-phase Toulmin argumentation sequence.
-    It returns a prompt that forces the LLM to output structured JSON
-    containing the foundational DATA (evidence) and CLAIM (assertion).
+    Returns a prompt that forces the LLM to extract DATA and construct a CLAIM.
+    The LLM must execute this prompt and return JSON.
 
     Args:
-        query: The topic or question to analyze (minimum 10 characters).
-               Example: "Is remote work more productive than office work?"
+        query: The proposition to analyze.
 
     Returns:
-        A JSON object containing:
-        - tool: The tool name
-        - phase: 1
-        - query: The original query
-        - prompt: The prompt to execute for Phase 1
-        - expected_output: Description of expected JSON format
-        - next_tool: The next tool to call (inject_logic_bridge)
+        Prompt for Phase 1 execution.
     """
-    try:
-        result = initiate_toulmin_sequence(query)
-        return json.dumps(result, indent=2)
-    except ToulminiError as e:
-        return json.dumps({"error": e.to_dict()}, indent=2)
-    except Exception as e:
-        return json.dumps({"error": {"message": str(e)}}, indent=2)
+    if len(query.strip()) < 5:
+        return '{"error": "QUERY_TOO_SHORT"}'
+    return prompt_phase_one(query.strip())
 
 
 @mcp.tool()
-def inject_logic_bridge_tool(
-    data_json: str,
-    claim_json: str,
-    query: str
-) -> str:
+def inject_logic_bridge(query: str, data_json: str, claim_json: str) -> str:
     """
-    Phase 2: Generate WARRANT and BACKING from Data and Claim.
+    PHASE 2: Construct the logical bridge.
 
-    This tool creates the logical bridge between evidence and conclusion.
-    WARRANT: The reasoning principle (If X, then Y)
-    BACKING: Authoritative support for the warrant
-
-    WARNING: If the LLM outputs backing.strength as 'weak', the argument
-    chain will be REJECTED and no further progress is possible.
+    Returns a prompt that forces the LLM to generate WARRANT and BACKING.
+    WARNING: If strength is 'weak', the argument will crash when validated.
 
     Args:
-        data_json: JSON string of the Data object from Phase 1.
-                   Must contain: facts, citations, evidence_type
-        claim_json: JSON string of the Claim object from Phase 1.
-                    Must contain: statement, scope
-        query: The original query for context
+        query: Original query.
+        data_json: JSON from Phase 1 (data object).
+        claim_json: JSON from Phase 1 (claim object).
 
     Returns:
-        A JSON object containing the prompt for Warrant + Backing generation.
-        If backing is weak, returns an error with rejection notice.
+        Prompt for Phase 2 execution.
     """
-    try:
-        result = inject_logic_bridge(data_json, claim_json, query)
-        return json.dumps(result, indent=2)
-    except ToulminiError as e:
-        return json.dumps({"error": e.to_dict()}, indent=2)
-    except Exception as e:
-        return json.dumps({"error": {"message": str(e)}}, indent=2)
+    if not data_json or not claim_json:
+        return '{"error": "MISSING_PHASE_1_OUTPUT"}'
+    return prompt_phase_two(query, data_json, claim_json)
 
 
 @mcp.tool()
-def stress_test_argument_tool(
+def stress_test_argument(
+    query: str,
     data_json: str,
     claim_json: str,
     warrant_json: str,
-    backing_json: str,
-    query: str
+    backing_json: str
 ) -> str:
     """
-    Phase 3: Generate REBUTTAL and QUALIFIER by stress-testing the argument.
+    PHASE 3: Adversarial stress test.
 
-    This tool forces adversarial analysis to find weaknesses:
-    REBUTTAL: Edge cases where the warrant fails ("black swans")
-    QUALIFIER: Degree of certainty (certainly, presumably, probably, etc.)
+    Returns a prompt that forces the LLM to find REBUTTALS and assign a QUALIFIER.
+    The LLM must actively try to destroy the argument.
 
     Args:
-        data_json: JSON from Phase 1 (data object)
-        claim_json: JSON from Phase 1 (claim object)
-        warrant_json: JSON from Phase 2 (warrant object)
-        backing_json: JSON from Phase 2 (backing object)
-        query: The original query for context
+        query: Original query.
+        data_json: JSON from Phase 1.
+        claim_json: JSON from Phase 1.
+        warrant_json: JSON from Phase 2.
+        backing_json: JSON from Phase 2.
 
     Returns:
-        A JSON object containing the prompt for Rebuttal + Qualifier generation.
-        Rejects if backing strength was 'weak'.
+        Prompt for Phase 3 execution.
     """
-    try:
-        result = stress_test_argument(
-            data_json, claim_json, warrant_json, backing_json, query
-        )
-        return json.dumps(result, indent=2)
-    except ToulminiError as e:
-        return json.dumps({"error": e.to_dict()}, indent=2)
-    except Exception as e:
-        return json.dumps({"error": {"message": str(e)}}, indent=2)
+    missing = []
+    if not data_json:
+        missing.append("data")
+    if not claim_json:
+        missing.append("claim")
+    if not warrant_json:
+        missing.append("warrant")
+    if not backing_json:
+        missing.append("backing")
+
+    if missing:
+        return f'{{"error": "MISSING_COMPONENTS", "missing": {missing}}}'
+
+    return prompt_phase_three(query, data_json, claim_json, warrant_json, backing_json)
 
 
 @mcp.tool()
-def render_verdict_tool(
+def render_verdict(
+    query: str,
     data_json: str,
     claim_json: str,
     warrant_json: str,
     backing_json: str,
     rebuttal_json: str,
-    qualifier_json: str,
-    query: str
+    qualifier_json: str
 ) -> str:
     """
-    Final Phase: Render VERDICT synthesizing the complete 6-part argument.
+    PHASE 4: Final verdict.
 
-    This tool produces the final synthesis determining if the claim stands.
-    VERDICT outcomes:
-    - STANDS: Claim survives scrutiny
-    - FALLS: Claim is fatally undermined
-    - QUALIFIED: Claim holds only under specific conditions
+    Returns a prompt that forces the LLM to render judgment.
+    Status: sustained | overruled | remanded
 
     Args:
-        data_json: JSON from Phase 1 (data object)
-        claim_json: JSON from Phase 1 (claim object)
-        warrant_json: JSON from Phase 2 (warrant object)
-        backing_json: JSON from Phase 2 (backing object)
-        rebuttal_json: JSON from Phase 3 (rebuttal object)
-        qualifier_json: JSON from Phase 3 (qualifier object)
-        query: The original query
+        query: Original query.
+        data_json: JSON from Phase 1.
+        claim_json: JSON from Phase 1.
+        warrant_json: JSON from Phase 2.
+        backing_json: JSON from Phase 2.
+        rebuttal_json: JSON from Phase 3.
+        qualifier_json: JSON from Phase 3.
 
     Returns:
-        A JSON object containing the prompt for final Verdict synthesis.
-        Requires all 6 prior components to be present.
+        Prompt for Phase 4 execution.
     """
-    try:
-        result = render_verdict(
-            data_json, claim_json, warrant_json,
-            backing_json, rebuttal_json, qualifier_json, query
-        )
-        return json.dumps(result, indent=2)
-    except ToulminiError as e:
-        return json.dumps({"error": e.to_dict()}, indent=2)
-    except Exception as e:
-        return json.dumps({"error": {"message": str(e)}}, indent=2)
+    required = [data_json, claim_json, warrant_json, backing_json, rebuttal_json, qualifier_json]
+    if not all(required):
+        return '{"error": "INCOMPLETE_CHAIN"}'
+
+    return prompt_phase_four(
+        query, data_json, claim_json, warrant_json,
+        backing_json, rebuttal_json, qualifier_json
+    )
 
 
 def main():
-    """Run the Toulmini MCP server."""
+    """Run the server."""
     mcp.run()
 
 

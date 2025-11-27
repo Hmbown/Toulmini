@@ -1,13 +1,12 @@
-"""Pydantic models for Toulmin argumentation."""
+"""Toulmin models. Strict Pydantic. Logic Compiler."""
 
 from .base import (
     Citation,
-    QualifierValue,
-    VerdictOutcome,
-    BackingStrength,
+    StrengthLevel,
+    VerdictStatus,
+    QualifierForce,
     LogicType,
     EvidenceType,
-    RebuttalSeverity,
 )
 from .components import (
     Data,
@@ -22,12 +21,11 @@ from .chain import ToulminChain
 
 __all__ = [
     "Citation",
-    "QualifierValue",
-    "VerdictOutcome",
-    "BackingStrength",
+    "StrengthLevel",
+    "VerdictStatus",
+    "QualifierForce",
     "LogicType",
     "EvidenceType",
-    "RebuttalSeverity",
     "Data",
     "Claim",
     "Warrant",

@@ -1,13 +1,10 @@
-"""Toulmini - Local MCP server implementing Toulmin's argumentation model."""
+"""
+Toulmini: A Logic Compiler for Arguments.
+
+Bad logic = crash. Weak backing = termination. No appeals.
+"""
 
 from .server import main, mcp
-from .exceptions import (
-    ToulminiError,
-    WeakBackingError,
-    DependencyError,
-    OutputFormatError,
-    ChainValidationError,
-)
 from .models import (
     ToulminChain,
     Data,
@@ -18,17 +15,14 @@ from .models import (
     Qualifier,
     Verdict,
     Citation,
+    StrengthLevel,
+    VerdictStatus,
 )
 
 __version__ = "1.0.0"
 __all__ = [
     "main",
     "mcp",
-    "ToulminiError",
-    "WeakBackingError",
-    "DependencyError",
-    "OutputFormatError",
-    "ChainValidationError",
     "ToulminChain",
     "Data",
     "Claim",
@@ -38,4 +32,6 @@ __all__ = [
     "Qualifier",
     "Verdict",
     "Citation",
+    "StrengthLevel",
+    "VerdictStatus",
 ]
