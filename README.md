@@ -111,21 +111,36 @@ Final judgment on the complete 6-part chain.
 
 Verdicts: **SUSTAINED** | **OVERRULED** | **REMANDED**
 
-## Example Flow
+## Execution Flow (The "Toulmin Loop")
+
+Each phase consists of two distinct steps:
+1.  **Tool Call:** The MCP server returns a strict system directive (Prompt).
+2.  **LLM Generation:** The LLM follows that directive to generate structured JSON.
 
 **Query:** "Would immortality be a curse?"
 
-1.  `initiate_toulmin_sequence(query)`
+### Phase 1: Grounding
+1.  **Tool Call:** `initiate_toulmin_sequence(query)`
+2.  **LLM Generates:**
     *   **DATA:** Terror Management Theory, hedonic adaptation research
     *   **CLAIM:** "Immortality constitutes a psychological curse..."
-2.  `inject_logic_bridge(query, data, claim)`
+
+### Phase 2: Logic Bridge
+3.  **Tool Call:** `inject_logic_bridge(query, data, claim)`
+4.  **LLM Generates:**
     *   **WARRANT:** "If well-being depends on mortality awareness..."
     *   **BACKING:** Heidegger, Becker, empirical TMT research
-    *   **Strength:** "strong" ✓
-3.  `stress_test_argument(query, data, claim, warrant, backing)`
+    *   *Strength Check:* "strong" ✓
+
+### Phase 3: Stress Test
+5.  **Tool Call:** `stress_test_argument(...)`
+6.  **LLM Generates:**
     *   **REBUTTAL:** Category error (mortal→immortal psychology)
     *   **QUALIFIER:** "possibly" (45% confidence)
-4.  `render_verdict(all_components)`
+
+### Phase 4: Judgment
+7.  **Tool Call:** `render_verdict(...)`
+8.  **LLM Generates:**
     *   **VERDICT:** "REMANDED" - insufficient empirical grounding
 
 See `examples/` for complete JSON traces.
