@@ -93,12 +93,23 @@ Stephen Toulmin's argumentation model breaks reasoning into six interconnected c
 
 ```mermaid
 graph TD
+    subgraph Phase 1
     DATA["DATA (Grounds)"] --> CLAIM
+    end
+
+    subgraph Phase 2
     BACKING --> WARRANT
     WARRANT --> CLAIM
+    end
+
+    subgraph Phase 3
     REBUTTAL --> WARRANT
     QUALIFIER --> CLAIM
+    end
+
+    subgraph Phase 4
     CLAIM --> VERDICT
+    end
 ```
 
 | Component | Purpose | Example ("Would immortality be a curse?") |

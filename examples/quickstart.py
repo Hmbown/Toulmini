@@ -3,17 +3,16 @@ import sys
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
+
 async def main():
     # 1. Define server parameters
     # We assume 'toulmini' is installed or accessible via python -m toulmini.server
     server_params = StdioServerParameters(
-        command="python",
-        args=["-m", "toulmini.server"],
-        env=None
+        command="python", args=["-m", "toulmini.server"], env=None
     )
 
     print("🔌 Connecting to Toulmini MCP Server...")
-    
+
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
             # 2. Initialize
@@ -42,7 +41,9 @@ async def main():
             print("\n📖 Reading toulmin://model resource...")
             try:
                 content = await session.read_resource("toulmin://model")
-                print(f"--- Content Preview ---\n{content.contents[0].text[:200]}...\n-----------------------")
+                print(
+                    f"--- Content Preview ---\n{content.contents[0].text[:200]}...\n-----------------------"
+                )
             except Exception as e:
                 print(f"❌ Failed to read resource: {e}")
 
@@ -51,14 +52,14 @@ async def main():
             print(f"\n🧪 Testing Phase 1 with query: '{query}'")
             try:
                 result = await session.call_tool(
-                    "initiate_toulmin_sequence",
-                    arguments={"query": query}
+                    "initiate_toulmin_sequence", arguments={"query": query}
                 )
                 print("--- Tool Output (Prompt) ---")
                 print(result.content[0].text[:200] + "...")
                 print("----------------------------")
             except Exception as e:
                 print(f"❌ Tool call failed: {e}")
+
 
 if __name__ == "__main__":
     try:
