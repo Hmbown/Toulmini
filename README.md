@@ -6,7 +6,40 @@
 
 > "The purpose of an argument is not to establish the truth of a conclusion, but to justify the right to hold it." — Stephen Toulmin, *The Uses of Argument* (1958)
 
-A Logic Harness for arguments. Forces LLMs into structured, sequential reasoning through Toulmin's argumentation model—7 components, 4 phases. Bad logic crashes. Good logic flows.
+**Toulmini is a Logic Harness for arguments.** It forces LLMs into structured, sequential reasoning through Toulmin's argumentation model—7 components, 4 phases. Bad logic crashes. Good logic flows.
+
+## ⚡️ Quickstart
+
+1. **Install:**
+   ```bash
+   pip install toulmini
+   ```
+
+2. **Run the Server:**
+   ```bash
+   # Add to Claude Desktop or your MCP client
+   mcp install toulmini -- python -m toulmini.server
+   ```
+
+3. **Ask your AI:**
+   > "Use the `toulmin-help` prompt to explain how this works."
+   > "Analyze this argument: Is remote work more productive?"
+
+## 🧩 What is it?
+
+Toulmini is an **MCP Server** that acts as a "logic firewall" for Large Language Models.
+
+- **It IS**: A structured process that forces an LLM to break down arguments into Data, Claim, Warrant, Backing, Rebuttal, and Qualifier.
+- **It IS NOT**: A chatbot. It does not converse. It outputs strict JSON structures that represent the anatomy of an argument.
+
+## ✨ Features
+
+- **4-Phase Logic Chain**: Data/Claim → Warrant/Backing → Rebuttal/Qualifier → Verdict.
+- **Circuit Breakers**: If the "Warrant" (logic) or "Backing" (evidence) is weak, the process **terminates immediately**.
+- **Adversarial Stress Testing**: Phase 3 forces the LLM to attack its own argument to find "black swans".
+- **Standard MCP Resources**:
+    - `toulmin://model`: Read a detailed definition of the Toulmin model.
+    - `toulmin-help`: A prompt to guide you through the tools.
 
 ## When to Use Toulmini
 

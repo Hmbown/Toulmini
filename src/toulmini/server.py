@@ -336,6 +336,97 @@ def format_analysis_report(
     )
 
 
+@mcp.resource("toulmin://model")
+def toulmin_model_resource() -> str:
+    """
+    Returns a detailed explanation of the Toulmin Argumentation Model.
+    Useful for LLMs to "read" to understand the definitions of Data, Claim, Warrant, etc.
+    """
+    return """
+# The Toulmin Argumentation Model
+
+Stephen Toulmin's model (1958) breaks arguments into six functional components.
+It moves beyond the syllogism (Premise -> Conclusion) to model how practical arguments actually work.
+
+## 1. DATA (Grounds)
+The raw facts or evidence used to support the claim.
+- **Nature**: Empirical, statistical, testimonial, or documentary.
+- **Requirement**: Must be verifiable and cited.
+- **Example**: "It is raining outside" (Visual observation).
+
+## 2. CLAIM
+The assertion or conclusion that is being argued for.
+- **Nature**: The destination of the argument.
+- **Requirement**: Must be falsifiable.
+- **Example**: "I should take an umbrella."
+
+## 3. WARRANT
+The logical bridge that connects Data to Claim.
+- **Nature**: A general principle, rule, or license.
+- **Structure**: "Since [Warrant], therefore [Claim]."
+- **Example**: "Since getting wet is undesirable..." (Implicit principle).
+
+## 4. BACKING
+The authority or support for the Warrant.
+- **Nature**: Why should we believe the Warrant?
+- **Requirement**: Statutory, scientific, or expert authority.
+- **Example**: "Hygiene standards dictate staying dry prevents illness."
+
+## 5. REBUTTAL
+Conditions where the Warrant does not hold.
+- **Nature**: Exceptions, counter-examples, or "black swans".
+- **Requirement**: Must be specific conditions, not just "it might be wrong".
+- **Example**: "Unless I am going swimming anyway."
+
+## 6. QUALIFIER
+The degree of certainty attached to the Claim.
+- **Nature**: Modality (presumably, possibly, certainly).
+- **Requirement**: Must reflect the strength of Rebuttals.
+- **Example**: "Probably."
+
+## The Verdict
+In Toulmini, the final output is a Verdict:
+- **SUSTAINED**: The argument holds up to scrutiny.
+- **OVERRULED**: The argument fails (logic weak, rebuttals strong).
+- **REMANDED**: Insufficient data to decide.
+"""
+
+
+@mcp.prompt("toulmin-help")
+def toulmin_help_prompt() -> str:
+    """
+    Returns a prompt that explains how to use the Toulmini tools.
+    """
+    return """
+You are a helpful assistant explaining how to use the Toulmini Logic Harness.
+
+Toulmini is NOT a chatbot. It is a strict, 4-phase logic engine.
+To analyze an argument, you must use the tools in this exact order:
+
+1. **initiate_toulmin_sequence(query)**
+   - Extracts DATA and constructs the CLAIM.
+   - *Output*: JSON with data and claim.
+
+2. **inject_logic_bridge(query, data, claim)**
+   - Constructs the WARRANT and BACKING.
+   - *Output*: JSON with warrant and backing.
+   - *Note*: If logic is weak, it crashes here.
+
+3. **stress_test_argument(query, data, claim, warrant, backing)**
+   - Finds REBUTTALS and assigns a QUALIFIER.
+   - *Output*: JSON with rebuttal and qualifier.
+
+4. **render_verdict(...)**
+   - Passes final judgment (SUSTAINED, OVERRULED, REMANDED).
+   - *Output*: JSON with verdict.
+
+5. **format_analysis_report(...)** (Optional)
+   - Creates a nice Markdown report.
+
+**Tip**: Always pass the JSON output from the previous step into the next step.
+"""
+
+
 def main():
     """Run the Toulmini MCP server."""
     logger.info("Toulmini Logic Harness starting...")
@@ -343,6 +434,8 @@ def main():
         "5 tools available: initiate_toulmin_sequence → inject_logic_bridge → "
         "stress_test_argument → render_verdict → format_analysis_report (optional)"
     )
+    logger.info("Resources: toulmin://model")
+    logger.info("Prompts: toulmin-help")
     mcp.run()
 
 
