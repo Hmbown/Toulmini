@@ -23,7 +23,7 @@
 
 **Toulmini is a Logic Harness that enforces rigorous argumentation through Stephen Toulmin's model.**
 
-Unlike standard conversational agents that hedge or produce "balanced" summaries, Toulmini forces Large Language Models into structured, sequential reasoning—**7 components across 4 phases**. Weak logic triggers circuit breakers. Strong logic flows through validation.
+Unlike standard conversational agents that hedge or produce "balanced" summaries, Toulmini forces Large Language Models into structured, sequential reasoning—**7 components across 4 phases**. Weak logic triggers circuit breakers. Strong logic flows through validation. It runs as a standalone MCP server—**no external API keys or cloud calls required.**
 
 ### The Problem
 
@@ -110,6 +110,28 @@ Add to MCP settings:
 
 Restart your IDE.
 </details>
+
+### Integrated CLI
+
+Use the bundled CLI after installation for zero-guesswork setup:
+
+```bash
+# Run health checks (ensures config + tools are registered)
+toulmini-cli --verify
+
+# Inspect the current environment-driven configuration
+toulmini-cli --config
+
+# Print the MCP config snippet without writing a file
+toulmini-cli --install -
+
+# Write the snippet directly to Claude Desktop's config
+# (PYTHONPATH is only added automatically when running from source)
+toulmini-cli --install "$HOME/Library/Application Support/Claude/claude_desktop_config.json"
+```
+
+`toulmini-setup-mcp` is retained as an alias that maps to the same CLI entry point.
+Configuration defaults live in `.env.example` and are documented in `docs/configuration.md`.
 
 ### Usage
 

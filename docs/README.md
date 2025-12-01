@@ -17,6 +17,8 @@ Welcome to the Toulmini documentation. Toulmini is a logic harness that forces L
 - [Examples](guides/examples.md) - Worked examples with full JSON traces
 
 ### Reference
+- [Installation (CLI)](installation.md) - End-to-end install with `toulmini-cli`
+- [Configuration Reference](configuration.md) - Environment variables, CLI flags, `.env`
 - [Technical Specification](SPEC.md) - Schemas, constraints, and API reference
 
 ## What is Toulmini?

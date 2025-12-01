@@ -1,4 +1,6 @@
+from toulmini.config import reset_config, set_config_value
 from toulmini.server import (
+    consult_field_experts,
     initiate_toulmin_sequence,
     inject_logic_bridge,
     stress_test_argument,
@@ -14,6 +16,8 @@ CLAIM_JSON = '{"statement": "Statement", "scope": "general"}'
 WARRANT_JSON = '{"principle": "This principle is definitely longer than twenty characters.", "logic_type": "deductive", "strength": "strong"}'
 # Authority must be min 10 chars
 BACKING_JSON = '{"authority": "Valid Authority Name", "citations": [{"source": "Source", "reference": "Ref"}], "strength": "strong"}'
+WEAK_WARRANT_JSON = '{"principle": "This warrant intentionally fails strength checks.", "logic_type": "deductive", "strength": "weak"}'
+WEAK_BACKING_JSON = '{"authority": "Weak Authority", "citations": [{"source": "Source", "reference": "Ref"}], "strength": "weak"}'
 REBUTTAL_JSON = '{"exceptions": [], "counterexamples": [], "strength": "weak"}'
 QUALIFIER_JSON = (
     '{"degree": "probably", "confidence_pct": 80, "rationale": "Rationale"}'
@@ -127,3 +131,67 @@ def test_format_analysis_report():
         verdict_json="",
     )
     assert '{"error": "INCOMPLETE_CHAIN"}' in result_error
+
+def test_consult_field_experts_respects_config():
+    set_config_value("enable_council", False)
+    try:
+        response = consult_field_experts("Query", ["Expert"])
+        assert response == '{"error": "COUNCIL_DISABLED"}'
+    finally:
+        reset_config()
+
+
+def test_stress_test_rejects_weak_warrant_by_default():
+    response = stress_test_argument(
+        query="Query",
+        data_json=DATA_JSON,
+        claim_json=CLAIM_JSON,
+        warrant_json=WEAK_WARRANT_JSON,
+        backing_json=BACKING_JSON,
+    )
+    assert '"TERMINATION_SIGNAL"' in response
+
+
+def test_stress_test_allows_weak_warrant_when_disabled():
+    set_config_value("fail_on_weak_warrant", False)
+    try:
+        response = stress_test_argument(
+            query="Query",
+            data_json=DATA_JSON,
+            claim_json=CLAIM_JSON,
+            warrant_json=WEAK_WARRANT_JSON,
+            backing_json=BACKING_JSON,
+        )
+        assert "PHASE 3: ADVERSARIAL STRESS TEST" in response
+    finally:
+        reset_config()
+
+
+def test_stress_test_allows_weak_backing_when_disabled():
+    set_config_value("fail_on_weak_backing", False)
+    try:
+        response = stress_test_argument(
+            query="Query",
+            data_json=DATA_JSON,
+            claim_json=CLAIM_JSON,
+            warrant_json=WARRANT_JSON,
+            backing_json=WEAK_BACKING_JSON,
+        )
+        assert "PHASE 3: ADVERSARIAL STRESS TEST" in response
+    finally:
+        reset_config()
+
+
+def test_stress_test_skips_checks_when_strict_mode_off():
+    set_config_value("strict_mode", False)
+    try:
+        response = stress_test_argument(
+            query="Query",
+            data_json=DATA_JSON,
+            claim_json=CLAIM_JSON,
+            warrant_json=WEAK_WARRANT_JSON,
+            backing_json=WEAK_BACKING_JSON,
+        )
+        assert "PHASE 3: ADVERSARIAL STRESS TEST" in response
+    finally:
+        reset_config()

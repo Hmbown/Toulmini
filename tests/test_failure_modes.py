@@ -9,7 +9,7 @@ def test_weak_warrant_termination():
 
     # Deliberately weak warrant
     warrant_json = '{"principle": "Things that are yellow are made of cheese.", "logic_type": "inductive", "strength": "weak"}'
-    backing_json = '{"authority": "None", "citations": [{"source": "None", "reference": "None"}], "strength": "weak"}'
+    backing_json = '{"authority": "Unqualified internet rumor", "citations": [{"source": "None", "reference": "None"}], "strength": "weak"}'
 
     result = stress_test_argument(
         query, data_json, claim_json, warrant_json, backing_json

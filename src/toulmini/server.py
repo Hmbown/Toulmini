@@ -10,6 +10,7 @@ import sys
 
 from mcp.server.fastmcp import FastMCP
 
+from .config import get_config
 from .prompts import (
     prompt_phase_one,
     prompt_phase_two,
@@ -20,8 +21,14 @@ from .prompts import (
 )
 
 # === LOGGING (stderr only - never stdout for STDIO servers) ===
+_config = get_config()
+_level_name = _config.log_level.upper()
+_log_level = getattr(logging, _level_name, logging.INFO)
+if _config.debug:
+    _log_level = logging.DEBUG
+
 logging.basicConfig(
-    level=logging.INFO,
+    level=_log_level,
     format="[%(levelname)s] %(name)s: %(message)s",
     stream=sys.stderr,
 )
@@ -138,9 +145,15 @@ def consult_field_experts(query: str, perspectives: list[str]) -> str:
     Returns:
         A prompt. Execute it to get JSON with arguments for and against from each perspective.
     """
-    logger.info(f"Council convened: {perspectives} on '{query[:30]}...'")
+    config = get_config()
+    if not config.enable_council:
+        logger.warning("Council disabled via configuration toggle")
+        return '{"error": "COUNCIL_DISABLED"}'
+
     if not perspectives:
         return '{"error": "NO_PERSPECTIVES_PROVIDED"}'
+
+    logger.info(f"Council convened: {perspectives} on '{query[:30]}...'")
     return prompt_consult_experts(query, perspectives)
 
 
@@ -253,24 +266,29 @@ def stress_test_argument(
 def _validate_logic_bridge(warrant_json: str, backing_json: str) -> str | None:
     """Helper to validate Warrant and Backing strength. Returns error JSON if failed."""
     try:
-        # We need to parse the JSON strings into dicts first, but Pydantic's model_validate_json handles strings directly?
-        # The input is a JSON string representing the object.
-        # Let's import the models inside the function to avoid circular imports if any,
-        # though top-level import is better. I'll add top-level imports in a separate edit.
         from .models.components import Warrant, Backing
 
         warrant = Warrant.model_validate_json(warrant_json)
-        warrant.logic_check()
-
         backing = Backing.model_validate_json(backing_json)
-        backing.logic_check()
-
     except ValueError as e:
         logger.error(f"CIRCUIT BREAKER TRIGGERED: {str(e)}")
         return f'{{"error": "TERMINATION_SIGNAL", "reason": "{str(e)}"}}'
     except Exception as e:
         logger.error(f"Validation error: {e}")
         return f'{{"error": "VALIDATION_ERROR", "reason": "{str(e)}"}}'
+
+    config = get_config()
+    if not config.strict_mode:
+        return None
+
+    try:
+        if config.fail_on_weak_warrant:
+            warrant.logic_check()
+        if config.fail_on_weak_backing:
+            backing.logic_check()
+    except ValueError as e:
+        logger.error(f"CIRCUIT BREAKER TRIGGERED: {str(e)}")
+        return f'{{"error": "TERMINATION_SIGNAL", "reason": "{str(e)}"}}'
 
     return None
 

@@ -2,8 +2,8 @@
 """
 Toulmini Verification Script.
 
-Tests that all 4 tools are registered and functioning correctly.
-Run with: python verify_toulmini.py
+Tests that all 5 tools are registered and functioning correctly.
+Run with: python scripts/validate_mcp.py
 """
 
 import asyncio
@@ -30,11 +30,13 @@ async def main():
             "inject_logic_bridge",
             "stress_test_argument",
             "render_verdict",
+            "format_analysis_report",
+            "consult_field_experts",
         }
         actual_tools = {tool.name for tool in tools}
 
         if actual_tools == expected_tools:
-            print("    ✓ All 4 tools registered correctly")
+            print("    ✓ All 6 tools registered correctly")
         else:
             missing = expected_tools - actual_tools
             extra = actual_tools - expected_tools
@@ -65,6 +67,24 @@ async def main():
             print("    ✗ Phase 1 returned empty result")
     except Exception as e:
         print(f"    ✗ Phase 1 failed: {e}")
+
+    # Test 2b: Helper - consult_field_experts
+    print("\n[2b] Testing Helper: consult_field_experts...")
+    try:
+        result = await mcp.call_tool(
+            "consult_field_experts",
+            arguments={
+                "query": "Is AI sentient?",
+                "perspectives": ["Neuroscientist", "Philosopher"],
+            },
+        )
+        content = result[0].text if hasattr(result[0], "text") else str(result[0])
+        if "Neuroscientist" in content and "Philosopher" in content:
+            print("    ✓ Council helper returns valid prompt with perspectives")
+        else:
+            print(f"    ⚠ Helper returned unexpected content: {content[:50]}")
+    except Exception as e:
+        print(f"    ✗ Helper failed: {e}")
 
     # Test 3: Query too short error
     print("\n[3] Testing error handling (query too short)...")
