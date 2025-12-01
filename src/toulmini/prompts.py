@@ -27,6 +27,65 @@ VIOLATION = TERMINATION."""
 
 
 # =============================================================================
+# HELPER: CONSULT EXPERTS (The Council)
+# =============================================================================
+
+
+def prompt_consult_experts(query: str, perspectives: list[str]) -> str:
+    """
+    HELPER: Convene a council of experts to generate raw arguments.
+
+    Common perspective examples:
+    - Ethics: 'Utilitarian Ethicist', 'Deontologist', 'Virtue Ethicist'
+    - Science: 'Empirical Scientist', 'Skeptical Researcher', 'Domain Expert'
+    - Law: 'Constitutional Scholar', 'Legal Realist', 'Civil Libertarian'
+    - Policy: 'Economist', 'Sociologist', 'Public Health Expert'
+
+    Integration guidance:
+    - Use 'argument_for' to enrich Backing in Phase 2
+    - Use 'argument_against' to seed Rebuttals in Phase 3
+    """
+    perspectives_str = ", ".join(perspectives)
+    return f"""{SYSTEM_DIRECTIVE}
+
+═══════════════════════════════════════════════════════════════════════════════
+HELPER: CONSULT THE COUNCIL OF EXPERTS
+═══════════════════════════════════════════════════════════════════════════════
+
+QUERY: {query}
+
+REQUIRED PERSPECTIVES (The Council):
+{perspectives_str}
+
+YOUR TASK:
+You must simulate the viewpoints of these specific experts/personas.
+For EACH perspective, provide:
+1. A supporting argument (BACKING potential for Phase 2)
+2. A dissenting argument (REBUTTAL potential for Phase 3)
+
+This is NOT the final verdict. It is raw material generation for the Toulmin process.
+
+INTEGRATION GUIDANCE:
+- argument_for: Will be used to strengthen Warrant Backing in Phase 2
+- argument_against: Will be used to identify Rebuttals in Phase 3
+- key_citation: Provide authoritative sources for this perspective's view
+
+OUTPUT SCHEMA:
+{{
+  "council_opinions": [
+    {{
+      "perspective": "string (e.g., 'Utilitarian Ethicist')",
+      "argument_for": "string (strongest point in favor)",
+      "argument_against": "string (strongest point against)",
+      "key_citation": "string (a likely source/authority for this view)"
+    }}
+  ]
+}}
+
+EMIT JSON. NOTHING ELSE."""
+
+
+# =============================================================================
 # PHASE 1: DATA + CLAIM
 # =============================================================================
 

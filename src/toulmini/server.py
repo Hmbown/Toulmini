@@ -16,6 +16,7 @@ from .prompts import (
     prompt_phase_three,
     prompt_phase_four,
     prompt_format_report,
+    prompt_consult_experts,
 )
 
 # === LOGGING (stderr only - never stdout for STDIO servers) ===
@@ -53,6 +54,46 @@ You should automatically:
 Each tool returns a PROMPT. You must EXECUTE that prompt to get JSON output,
 then pass the extracted components to the next phase.
 
+## THE COUNCIL (Optional but Powerful)
+
+### When to Convene the Council
+
+Use `consult_field_experts` BEFORE Phase 2 or Phase 3 when:
+- **Ethical Dilemmas**: Query involves moral reasoning or contested values
+  - Example perspectives: ['Utilitarian Ethicist', 'Deontologist', 'Virtue Ethicist']
+- **Scientific Claims**: Query requires domain expertise or empirical validation
+  - Example perspectives: ['Empiricist', 'Domain Expert', 'Skeptical Scientist']
+- **Complex Policy**: Query spans multiple disciplines or stakeholder viewpoints
+  - Example perspectives: ['Economist', 'Sociologist', 'Policy Analyst']
+- **Legal Questions**: Query involves rights, precedent, or interpretation
+  - Example perspectives: ['Constitutional Scholar', 'Legal Realist', 'Civil Rights Advocate']
+
+### How to Integrate Council Output
+
+**Council → Phase 2 (Backing):**
+Use the `argument_for` from Council perspectives to enrich your Backing authority.
+
+**Council → Phase 3 (Rebuttals):**
+Use the `argument_against` from Council perspectives to identify stronger Rebuttals.
+
+**Integration Pattern:**
+1. Convene Council with 2-3 relevant perspectives
+2. Execute the returned prompt to get `council_opinions`
+3. In Phase 2: Reference Council backing in your authority statement
+4. In Phase 3: Use Council critiques as rebuttal exceptions
+
+### Council Best Practices
+
+**DO:**
+- Choose perspectives that genuinely differ in methodology or values
+- Use specific expert roles, not generic labels (❌ "Expert" → ✓ "Neuroscientist")
+- Integrate Council insights into your reasoning, don't just copy them
+
+**DON'T:**
+- Use the Council for simple factual queries with clear answers
+- Choose redundant perspectives that would give identical arguments
+- Skip integration—if you convene the Council, USE the output
+
 ## CIRCUIT BREAKERS
 
 The analysis chain will terminate early if:
@@ -68,16 +109,39 @@ or "let me see each phase"), then pause after each phase for user confirmation.
 
 ## QUICK REFERENCE
 
-| Phase | Tool | Extracts |
-|-------|------|----------|
-| 1 | initiate_toulmin_sequence | data, claim |
-| 2 | inject_logic_bridge | warrant, backing |
-| 3 | stress_test_argument | rebuttal, qualifier |
-| 4 | render_verdict | verdict |
-| 5 | format_analysis_report | formatted report |
+| Phase | Tool | Extracts | Notes |
+|-------|------|----------|-------|
+| Helper | consult_field_experts | council_opinions | Use for complex/contested queries |
+| 1 | initiate_toulmin_sequence | data, claim | Foundation phase |
+| 2 | inject_logic_bridge | warrant, backing | Integrate Council backing here |
+| 3 | stress_test_argument | rebuttal, qualifier | Integrate Council rebuttals here |
+| 4 | render_verdict | verdict | Final judgment |
+| 5 | format_analysis_report | formatted report | Optional: Human-readable output |
 """
 
 mcp = FastMCP("toulmini", instructions=MCP_INSTRUCTIONS)
+
+
+@mcp.tool()
+def consult_field_experts(query: str, perspectives: list[str]) -> str:
+    """
+    HELPER: Convene a 'Council of Experts' to generate raw arguments.
+
+    Use this OPTIONALLY before Phase 2 (to find Backing) or Phase 3 (to find Rebuttals)
+    when the topic requires specialized domain knowledge or diverse ethical viewpoints.
+
+    Args:
+        query: The proposition to analyze.
+        perspectives: A list of personas or fields to simulate.
+            Example: ["Utilitarian Ethicist", "Corporate Lawyer", "Environmental Scientist"]
+
+    Returns:
+        A prompt. Execute it to get JSON with arguments for and against from each perspective.
+    """
+    logger.info(f"Council convened: {perspectives} on '{query[:30]}...'")
+    if not perspectives:
+        return '{"error": "NO_PERSPECTIVES_PROVIDED"}'
+    return prompt_consult_experts(query, perspectives)
 
 
 @mcp.tool()
@@ -309,6 +373,9 @@ def format_analysis_report(
     Returns:
         A prompt that will generate a well-formatted markdown report summarizing
         the entire Toulmin analysis with proper headings, sections, and styling.
+
+    Example:
+        Call this tool with all the accumulated JSON from Phases 1-4 to get a final report.
     """
     logger.info("Phase 5 initiated: Formatting analysis report")
     required = [
@@ -402,6 +469,10 @@ You are a helpful assistant explaining how to use the Toulmini Logic Harness.
 
 Toulmini is NOT a chatbot. It is a strict, 4-phase logic engine.
 To analyze an argument, you must use the tools in this exact order:
+
+(Optional) **consult_field_experts(query, perspectives)**
+   - Convene a "Council" to generate diverse viewpoints/backing.
+   - Use this if the topic is complex or requires domain expertise.
 
 1. **initiate_toulmin_sequence(query)**
    - Extracts DATA and constructs the CLAIM.

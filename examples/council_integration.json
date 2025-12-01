@@ -1,0 +1,208 @@
+{
+  "example": "Full Toulmin Analysis with Council Integration",
+  "query": "Should we allow human genetic engineering for enhancement purposes?",
+  "description": "This example demonstrates how to integrate the Council of Experts into a complete Toulmin analysis. The Council is convened before Phase 2 to gather diverse ethical perspectives, which then enrich both the Backing (Phase 2) and Rebuttals (Phase 3).",
+
+  "workflow": [
+    {
+      "step": "HELPER",
+      "tool": "consult_field_experts",
+      "input": {
+        "query": "Should we allow human genetic engineering for enhancement purposes?",
+        "perspectives": [
+          "Bioethicist",
+          "Medical Geneticist",
+          "Disability Rights Advocate"
+        ]
+      },
+      "output": {
+        "council_opinions": [
+          {
+            "perspective": "Bioethicist",
+            "argument_for": "Genetic engineering could eliminate suffering from hereditary diseases, fulfilling medicine's core mandate to prevent harm. Therapeutic and enhancement interventions exist on a continuum, making categorical bans philosophically inconsistent.",
+            "argument_against": "Enhancement creates distributive justice issues—only the wealthy access improvements, exacerbating inequality. It also risks imposing parental preferences on children who cannot consent, violating their autonomy.",
+            "key_citation": "Sandel, M. The Case Against Perfection (2007)"
+          },
+          {
+            "perspective": "Medical Geneticist",
+            "argument_for": "CRISPR and similar technologies are becoming safer and more precise. Germline editing for disease prevention has been successful in animal models and some human trials (e.g., He Jiankui's controversial work showed technical feasibility).",
+            "argument_against": "Off-target effects remain poorly understood. Editing germline cells affects all future generations—errors compound over time. We lack long-term safety data across multiple human generations.",
+            "key_citation": "Doudna & Sternberg, A Crack in Creation (2017)"
+          },
+          {
+            "perspective": "Disability Rights Advocate",
+            "argument_for": "Some genetic conditions cause immense suffering that no accommodation can fully address. Parents should have autonomy to prevent severe pain or early death for their children.",
+            "argument_against": "Enhancement rhetoric frames disability as defect, reinforcing ableism. It assumes a 'normal' baseline and pathologizes difference. Genetic diversity includes traits society wrongly devalues (e.g., deafness, neurodivergence).",
+            "key_citation": "Garland-Thomson, R. Extraordinary Bodies (1997)"
+          }
+        ]
+      },
+      "integration_note": "Council output will be used in Phase 2 to strengthen Backing and in Phase 3 to identify nuanced Rebuttals."
+    },
+
+    {
+      "step": "PHASE 1",
+      "tool": "initiate_toulmin_sequence",
+      "input": {
+        "query": "Should we allow human genetic engineering for enhancement purposes?"
+      },
+      "output": {
+        "data": {
+          "facts": [
+            "CRISPR-Cas9 technology enables precise genetic editing with 90%+ accuracy in controlled settings",
+            "He Jiankui's 2018 germline editing experiment created HIV-resistant twins, demonstrating technical feasibility",
+            "Survey data shows 60% of prospective parents would use genetic engineering to prevent disease, 40% for enhancement",
+            "Countries like UK allow mitochondrial replacement therapy (germline modification), while Germany bans it entirely"
+          ],
+          "citations": [
+            {
+              "source": "Doudna & Charpentier",
+              "reference": "The new frontier of genome engineering with CRISPR-Cas9, Science (2014)",
+              "url": "https://doi.org/10.1126/science.1258096"
+            },
+            {
+              "source": "Cyranoski & Ledford",
+              "reference": "How the genome-edited babies revelation will affect research, Nature (2018)",
+              "url": "https://doi.org/10.1038/d41586-018-07559-8"
+            },
+            {
+              "source": "Pew Research Center",
+              "reference": "Public opinion on gene editing for babies depends on how it would be used (2018)",
+              "url": null
+            }
+          ],
+          "evidence_type": "empirical"
+        },
+        "claim": {
+          "statement": "Human genetic engineering for enhancement purposes should remain prohibited pending resolution of safety, equity, and consent concerns",
+          "scope": "general"
+        }
+      }
+    },
+
+    {
+      "step": "PHASE 2",
+      "tool": "inject_logic_bridge",
+      "input": {
+        "query": "Should we allow human genetic engineering for enhancement purposes?",
+        "data_json": "{\"facts\": [...], \"citations\": [...], \"evidence_type\": \"empirical\"}",
+        "claim_json": "{\"statement\": \"Human genetic engineering for enhancement purposes should remain prohibited pending resolution of safety, equity, and consent concerns\", \"scope\": \"general\"}"
+      },
+      "output": {
+        "warrant": {
+          "principle": "If an intervention (a) carries irreversible multigenerational risks, (b) exacerbates existing inequalities, and (c) cannot obtain informed consent from affected parties, then precautionary prohibition is justified until these issues are resolved",
+          "logic_type": "deductive",
+          "strength": "strong"
+        },
+        "backing": {
+          "authority": "Bioethical precautionary principle (Jonas, 1984), medical ethics consensus on informed consent (Beauchamp & Childress), disability justice framework (Garland-Thomson). Medical Geneticist Council perspective confirms safety uncertainties (off-target effects, generational impacts). Disability Rights Advocate Council perspective identifies autonomy and ableism concerns.",
+          "citations": [
+            {
+              "source": "Jonas, H.",
+              "reference": "The Imperative of Responsibility: In Search of an Ethics for the Technological Age (1984)",
+              "url": null
+            },
+            {
+              "source": "Beauchamp & Childress",
+              "reference": "Principles of Biomedical Ethics, 8th ed. (2019)",
+              "url": null
+            },
+            {
+              "source": "Council: Disability Rights Advocate",
+              "reference": "Garland-Thomson, R. Extraordinary Bodies (1997)",
+              "url": null
+            },
+            {
+              "source": "Council: Medical Geneticist",
+              "reference": "Doudna & Sternberg, A Crack in Creation (2017)",
+              "url": null
+            }
+          ],
+          "strength": "strong"
+        }
+      },
+      "integration_note": "The Backing directly incorporates Council perspectives from Medical Geneticist (safety) and Disability Rights Advocate (autonomy/ableism). This strengthens the authority by adding domain-specific expertise."
+    },
+
+    {
+      "step": "PHASE 3",
+      "tool": "stress_test_argument",
+      "input": {
+        "query": "Should we allow human genetic engineering for enhancement purposes?",
+        "data_json": "{...}",
+        "claim_json": "{...}",
+        "warrant_json": "{...}",
+        "backing_json": "{...}"
+      },
+      "output": {
+        "rebuttal": {
+          "exceptions": [
+            "Unless safety data reaches consensus threshold (e.g., multi-generational studies show <0.1% off-target rate)",
+            "Unless access mechanisms ensure equitable distribution (e.g., public funding, universal availability)",
+            "Unless consent frameworks are developed for germline changes (e.g., reversible modifications, opt-out at maturity)",
+            "Unless 'enhancement' can be distinguished from 'therapy' (Bioethicist Council: continuum problem remains unsolved)",
+            "Unless societal ableism is addressed first (Disability Rights Advocate: genetic 'fixing' reinforces deficit model)"
+          ],
+          "counterexamples": [
+            "Mitochondrial replacement therapy (UK-approved germline modification) has proceeded safely under strict oversight",
+            "Bioethicist Council argument: Therapeutic/enhancement distinction is philosophically incoherent, undermining categorical prohibition"
+          ],
+          "strength": "strong"
+        },
+        "qualifier": {
+          "degree": "probably",
+          "confidence_pct": 70,
+          "rationale": "Strong rebuttals exist (Bioethicist's continuum argument, UK mitochondrial precedent), but do not fully overcome safety/equity/consent concerns. The precautionary principle holds given irreversible multigenerational stakes, but technological/ethical progress could shift the balance."
+        }
+      },
+      "integration_note": "Phase 3 directly integrates Council rebuttals: Bioethicist's 'continuum problem' and Disability Rights Advocate's 'ableism must be addressed first' become explicit exceptions. This creates more nuanced, expert-informed rebuttals than generic adversarial critique."
+    },
+
+    {
+      "step": "PHASE 4",
+      "tool": "render_verdict",
+      "input": {
+        "query": "Should we allow human genetic engineering for enhancement purposes?",
+        "data_json": "{...}",
+        "claim_json": "{...}",
+        "warrant_json": "{...}",
+        "backing_json": "{...}",
+        "rebuttal_json": "{...}",
+        "qualifier_json": "{...}"
+      },
+      "output": {
+        "verdict": {
+          "status": "sustained",
+          "reasoning": "The claim that enhancement genetic engineering should remain prohibited is sustained with qualifications. The warrant holds: irreversible multigenerational risks, equity gaps, and consent impossibilities justify precaution. Council-informed backing strengthens this through expert testimony (Medical Geneticist on safety, Disability Rights Advocate on autonomy). Rebuttals are significant (Bioethicist's continuum argument, UK precedent) but do not invalidate the precautionary stance—they indicate conditions under which prohibition could be lifted. Qualifier confidence (70%) reflects strong but not absolute certainty given technological evolution and ethical debate.",
+          "final_statement": "Prohibition is justified now, but conditional on addressing safety data, equitable access, consent frameworks, and societal ableism."
+        }
+      }
+    },
+
+    {
+      "step": "PHASE 5",
+      "tool": "format_analysis_report",
+      "input": {
+        "query": "Should we allow human genetic engineering for enhancement purposes?",
+        "data_json": "{...}",
+        "claim_json": "{...}",
+        "warrant_json": "{...}",
+        "backing_json": "{...}",
+        "rebuttal_json": "{...}",
+        "qualifier_json": "{...}",
+        "verdict_json": "{...}"
+      },
+      "output_note": "This would generate a human-readable markdown report. See the README for formatting details."
+    }
+  ],
+
+  "key_learnings": [
+    "Council perspectives (Bioethicist, Medical Geneticist, Disability Rights Advocate) enriched the analysis with domain-specific reasoning",
+    "Phase 2 Backing became more authoritative by citing Council experts directly",
+    "Phase 3 Rebuttals became more nuanced by incorporating Council's 'argument_against' insights",
+    "The continuum problem (therapy vs. enhancement) and ableism concerns would likely not emerge without Council",
+    "Final verdict's conditionality ('unless...') reflects Council-informed sophistication"
+  ],
+
+  "when_to_use_council": "This query involves ethical dilemmas (autonomy, consent), scientific claims (CRISPR safety), and contested values (disability as defect vs. difference). The Council was essential—without it, the analysis would miss critical perspectives and produce a shallower verdict."
+}
