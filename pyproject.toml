@@ -1,6 +1,6 @@
 [project]
 name = "toulmini"
-version = "1.0.0"
+version = "1.1.0"
 description = "Argumentation model: 7 components, 4 phases. Bad logic crashes. Good logic flows."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,6 +12,7 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://toulmini-web.pages.dev/"
+Documentation = "https://github.com/Hmbown/Toulmini/tree/main/docs"
 Repository = "https://github.com/Hmbown/Toulmini"
 
 [project.scripts]
