@@ -1,69 +1,264 @@
-# Toulmini
+<div align="center">
 
-[![Website](https://img.shields.io/badge/Website-Toulmini-blue)](https://toulmini.web.app)
-[![GitHub](https://img.shields.io/badge/GitHub-Repo-black)](https://github.com/Hmbown/Toulmini)
-[![PyPI](https://img.shields.io/badge/PyPI-Package-green)](https://pypi.org/project/toulmini/)
+# 🏛️ Toulmini
 
-> "The purpose of an argument is not to establish the truth of a conclusion, but to justify the right to hold it." — Stephen Toulmin, *The Uses of Argument* (1958)
+**Logic Architecture for Large Language Models**
 
-**Toulmini is a Logic Harness for arguments.** It forces LLMs into structured, sequential reasoning through Toulmin's argumentation model—7 components, 4 phases. Bad logic crashes. Good logic flows.
+[![PyPI version](https://img.shields.io/pypi/v/toulmini?color=blue&logo=pypi&logoColor=white)](https://pypi.org/project/toulmini/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io)
+[![Tests](https://img.shields.io/badge/tests-passing-brightgreen.svg)](https://github.com/Hmbown/Toulmini/actions)
 
-## ⚡️ Quickstart
+[Website](https://toulmini-web.pages.dev/) • [Documentation](https://github.com/Hmbown/Toulmini/tree/main/docs) • [Examples](https://github.com/Hmbown/Toulmini/tree/main/examples) • [PyPI](https://pypi.org/project/toulmini/)
 
-1. **Install:**
-   ```bash
-   pip install toulmini
-   ```
+</div>
 
-2. **Run the Server:**
-   ```bash
-   # Add to Claude Desktop or your MCP client
-   mcp install toulmini -- python -m toulmini.server
-   ```
+---
 
-3. **Ask your AI:**
-   > "Use the `toulmin-help` prompt to explain how this works."
-   > "Analyze this argument: Is remote work more productive?"
+## 📖 Overview
 
-## 🧩 What is it?
+> *"The purpose of an argument is not to establish the truth of a conclusion, but to justify the right to hold it."*
+> — Stephen Toulmin, *The Uses of Argument* (1958)
 
-Toulmini is an **MCP Server** that acts as a "logic firewall" for Large Language Models.
+**Toulmini is a Logic Harness that enforces rigorous argumentation through Stephen Toulmin's model.**
 
-- **It IS**: A structured process that forces an LLM to break down arguments into Data, Claim, Warrant, Backing, Rebuttal, and Qualifier.
-- **It IS NOT**: A chatbot. It does not converse. It outputs strict JSON structures that represent the anatomy of an argument.
+Unlike standard conversational agents that hedge or produce "balanced" summaries, Toulmini forces Large Language Models into structured, sequential reasoning—**7 components across 4 phases**. Weak logic triggers circuit breakers. Strong logic flows through validation.
 
-## ✨ Features
+### The Problem
 
-- **4-Phase Logic Chain**: Data/Claim → Warrant/Backing → Rebuttal/Qualifier → Verdict.
-- **Circuit Breakers**: If the "Warrant" (logic) or "Backing" (evidence) is weak, the process **terminates immediately**.
-- **Adversarial Stress Testing**: Phase 3 forces the LLM to attack its own argument to find "black swans".
-- **Standard MCP Resources**:
-    - `toulmin://model`: Read a detailed definition of the Toulmin model.
-    - `toulmin-help`: A prompt to guide you through the tools.
+LLMs tend to:
+- ✗ Produce hedged "balanced" answers without committing to a position
+- ✗ Skip logical steps and jump to conclusions
+- ✗ Accept weak backing without scrutiny
+- ✗ Avoid adversarial self-critique
 
-## When to Use Toulmini
+### The Solution
 
-**Holiday dinner getting heated?** Uncle says something that doesn't quite add up. Instead of arguing, try: *"I wonder what my Logic Harness would say about that."*
+Toulmini enforces:
+- ✓ **Falsifiable claims** with explicit scope (no hedging)
+- ✓ **Sequential phase execution** (can't skip to verdict)
+- ✓ **Circuit breakers** that crash on weak logic/backing
+- ✓ **Mandatory adversarial testing** (Phase 3: destroy your own argument)
 
-Toulmini turns debates into structured inquiry. Instead of getting defensive, invite others on the journey of figuring out what actually makes logical sense—together.
+**Result:** Scoped, falsifiable claims with explicit confidence levels, backed by citations and stress-tested through rebuttals.
 
-Perfect for:
-- **Family gatherings** — When loved ones hold views that seem illogical, explore *why* instead of fighting
-- **Philosophical questions** — "Would immortality be a curse?" "Is free will an illusion?"
-- **Contested claims** — Force any argument through rigorous logical scrutiny
-- **Self-reflection** — Test your own beliefs before defending them
+---
 
-## Key Findings
+## ⚡ Quickstart
 
-Testing reveals measurable differences in reasoning quality when using Toulmini versus single-prompt approaches:
+### Installation
+
+```bash
+pip install toulmini
+```
+
+### Configuration
+
+Add Toulmini to your MCP-compatible client:
+
+<details>
+<summary><strong>Claude Code (CLI)</strong></summary>
+
+```bash
+mcp install toulmini --scope user -- python -m toulmini.server
+```
+
+**Verify:**
+```bash
+mcp list
+```
+</details>
+
+<details>
+<summary><strong>Claude Desktop (macOS/Windows/Linux)</strong></summary>
+
+Add to your `claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "toulmini": {
+      "command": "python",
+      "args": ["-m", "toulmini.server"]
+    }
+  }
+}
+```
+
+**Config locations:**
+- **macOS:** `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux:** `~/.config/Claude/claude_desktop_config.json`
+
+Restart Claude Desktop after editing.
+</details>
+
+<details>
+<summary><strong>Cursor / Windsurf</strong></summary>
+
+Add to MCP settings:
+
+```json
+{
+  "toulmini": {
+    "command": "python",
+    "args": ["-m", "toulmini.server"]
+  }
+}
+```
+
+Restart your IDE.
+</details>
+
+### Usage
+
+Once configured, your AI can use Toulmini directly:
+
+```
+"Analyze this argument: Should we allow human genetic engineering for enhancement?"
+```
+
+Toulmini will automatically execute all 5 phases and present a comprehensive verdict.
+
+**For manual control:**
+```
+"Use toulmin-help to show me how this works step-by-step"
+```
+
+---
+
+## 🎯 What Makes Toulmini Different?
+
+### NOT a Chatbot
+Toulmini is a **logic compiler**, not a conversational agent. It:
+- Does NOT produce free-form explanations
+- Does NOT hedge with "it depends" responses
+- Does NOT accept weak reasoning
+
+### IS a Logic Harness
+Toulmini:
+- **Enforces structure** through 7 Toulmin components
+- **Validates rigorously** via Pydantic schemas and custom logic checks
+- **Crashes intentionally** when logic is weak (Circuit Breaker pattern)
+- **Forces adversarial critique** in Phase 3 (attack your own argument)
+
+### Architecture Guarantees
+
+| Principle | Implementation |
+|-----------|----------------|
+| **No external API calls** | Runs locally, uses only your LLM |
+| **Strict type safety** | Pydantic validation on all components |
+| **Sequential enforcement** | Phase N requires Phases 1..N-1 outputs |
+| **JSON-only output** | System directive forbids conversational text |
+| **Circuit breakers** | Weak warrant/backing → immediate termination |
+
+---
+
+## ✨ Core Features
+
+### 🔗 4-Phase Sequential Execution
+
+```mermaid
+graph LR
+    A[Phase 1:<br/>Data + Claim] --> B[Phase 2:<br/>Warrant + Backing]
+    B --> C[Phase 3:<br/>Rebuttal + Qualifier]
+    C --> D[Phase 4:<br/>Verdict]
+    D --> E[Phase 5:<br/>Report]
+
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#ffe1e1
+    style D fill:#e1ffe1
+    style E fill:#f0e1ff
+```
+
+Each phase:
+- Returns a **strict system directive** (not free-form text)
+- Requires **JSON-only output** (validated via Pydantic)
+- Depends on **previous phase outputs** (enforced sequentially)
+
+### ⚡ Circuit Breaker System
+
+Toulmini **crashes immediately** if logic fails validation:
+
+```python
+# Phase 2 Logic Check (server.py:218-240)
+warrant.logic_check()  # Raises if strength == "weak" or "irrelevant"
+backing.logic_check()  # Raises if strength == "weak" or "irrelevant"
+```
+
+**Result:** No weak arguments reach Phase 3. The chain terminates with `TERMINATION_SIGNAL`.
+
+### 🎭 Adversarial Stress Testing
+
+Phase 3 prompt directive:
+> *"You are an adversary. Your job is to DESTROY this argument. Find every weakness. Every edge case. Every 'black swan.'"*
+
+The LLM must:
+- List **exceptions** where the warrant fails
+- Find **counterexamples** that invalidate the claim
+- Assign a **qualifier** based on rebuttal strength
+
+### 🧠 The Council of Experts (Optional)
+
+Convene specialized perspectives before Phase 2 or 3:
+
+```python
+consult_field_experts(
+    query="Should we allow genetic engineering for enhancement?",
+    perspectives=["Bioethicist", "Medical Geneticist", "Disability Rights Advocate"]
+)
+```
+
+Council output enriches:
+- **Phase 2 Backing:** `argument_for` strengthens authority
+- **Phase 3 Rebuttals:** `argument_against` seeds exceptions
+
+See [Council Integration Example](examples/council_integration.json) for complete workflow.
+
+### 📚 MCP Resources
+
+- **`toulmin://model`** — Detailed definition of Toulmin's 6 components
+- **`toulmin-help`** — Interactive guide to tool usage
+
+---
+
+## 💡 Use Cases
+
+### 🏛️ Rigorous Inquiry
+- **Philosophical questions** — "Would immortality be a curse?" "Is free will real?"
+- **Contested scientific claims** — "Is nuclear energy safe?"
+- **Ethical dilemmas** — "Should we allow genetic enhancement?"
+
+### 🔍 Debate Analysis
+Transform heated arguments into structured analysis:
+- **Extract the logical structure** of both sides
+- **Identify weak backing** that's being taken for granted
+- **Surface rebuttals** that haven't been addressed
+
+### 🧪 Self-Reflection
+Test your own beliefs before defending them:
+- **Claim formulation** — Can you state it without hedging?
+- **Backing validation** — Do you have actual authority/evidence?
+- **Rebuttal resistance** — What conditions would falsify your view?
+
+### 🤖 AI Output Verification
+Use Toulmini to stress-test another LLM's reasoning:
+- **Input:** The other model's conclusion
+- **Output:** Toulmin analysis revealing logical gaps or weak backing
+
+---
+
+## 📊 Comparison: Single-Call vs. Toulmini
 
 <details>
 <summary><strong>Example: "Is remote work more productive?"</strong></summary>
 
-**Raw LLM Response (single prompt):**
+### Raw LLM Response (single prompt):
 > "Remote work has both advantages and disadvantages. Some studies show increased productivity, while others highlight challenges with collaboration. It depends on the individual, the role, and the company culture. There's no one-size-fits-all answer."
 
-**Toulmini-Structured Response:**
+### Toulmini-Structured Response:
 
 | Component | Output |
 |-----------|--------|
@@ -75,7 +270,8 @@ Testing reveals measurable differences in reasoning quality when using Toulmini 
 | **Qualifier** | Probably (65% confidence) |
 | **Verdict** | **SUSTAINED** — with explicit scope limitations |
 
-**Key Difference**: The raw response hedges without committing. Toulmini forces a scoped, falsifiable claim with explicit confidence and acknowledged limitations.
+### Key Difference
+The raw response hedges without committing. Toulmini forces a scoped, falsifiable claim with explicit confidence and acknowledged limitations.
 
 </details>
 
@@ -85,11 +281,11 @@ Testing reveals measurable differences in reasoning quality when using Toulmini 
 - **Multi-phase analysis** (Toulmini) surfaces specific claims, cites actual evidence, and produces actionable verdicts
 - **Circuit breakers** prevent proceeding with weak reasoning—if the backing is speculative, the chain terminates
 
-See the [full documentation](docs/) for more examples and detailed usage guides.
+---
 
-## What is Toulmin's Model?
+## 🧩 Toulmin's Model
 
-Stephen Toulmin's argumentation model breaks reasoning into six interconnected components (plus a final verdict):
+Stephen Toulmin's argumentation model (1958) breaks reasoning into six interconnected components:
 
 ```mermaid
 graph TD
@@ -112,109 +308,110 @@ graph TD
     end
 ```
 
-| Component | Purpose | Example ("Would immortality be a curse?") |
-| :--- | :--- | :--- |
+| Component | Purpose | Example ("Is immortality desirable?") |
+|-----------|---------|---------------------------------------|
 | **DATA** | Raw facts/evidence (must be cited) | "Terror Management Theory shows meaning derives from mortality awareness" |
-| **CLAIM** | Assertion based only on the data | "Immortality constitutes a psychological curse" |
-| **WARRANT** | Logical principle connecting data to claim | "If well-being depends on mortality awareness, removing mortality eliminates flourishing" |
+| **CLAIM** | Assertion based only on the data | "Immortality would constitute a psychological burden" |
+| **WARRANT** | Logical principle connecting data to claim | "If well-being depends on mortality awareness, then immortality eliminates flourishing" |
 | **BACKING** | Authority supporting the warrant | "Heidegger, Becker, empirical TMT research" |
 | **REBUTTAL** | Conditions where the warrant fails | "Unless meaning can arise from sources unrelated to death awareness" |
 | **QUALIFIER** | Degree of certainty | "Possibly" (45% confidence) |
 | **VERDICT** | Final synthesis | "REMANDED" — insufficient empirical grounding |
 
-## The 5 Tools
+---
+
+## 🔧 The 5 Tools
 
 ### Phase 1: `initiate_toulmin_sequence`
+**Extracts DATA and constructs CLAIM**
 
-Starts the analysis. Extracts DATA and constructs CLAIM.
-
-*   **Input:** `query` (str) - "Is this copyright infringement?"
-*   **Output:** Structured prompt → JSON with data + claim
+- **Input:** `query` (str)
+- **Output:** JSON with `data` + `claim`
+- **Validation:** Minimum 1 fact, 1 citation; claim must not be a question
 
 ### Phase 2: `inject_logic_bridge`
+**Builds the logical bridge: WARRANT and BACKING**
 
-Builds the logical bridge: WARRANT and BACKING.
-
-*   **Input:** `query`, `data_json`, `claim_json`
-*   **Output:** Structured prompt → JSON with warrant + backing
-
-> ⚠️ **HARD REJECTION:** If strength == "weak" or "irrelevant", chain terminates.
+- **Input:** `query`, `data_json`, `claim_json`
+- **Output:** JSON with `warrant` + `backing`
+- ⚠️ **CIRCUIT BREAKER:** If `strength == "weak"` or `"irrelevant"`, chain terminates
 
 ### Phase 3: `stress_test_argument`
+**Adversarial attack: REBUTTAL and QUALIFIER**
 
-Adversarial attack: REBUTTAL and QUALIFIER.
-
-*   **Input:** `query`, `data_json`, `claim_json`, `warrant_json`, `backing_json`
-*   **Output:** Structured prompt → JSON with rebuttal + qualifier
-
-Must find "black swan" scenarios where the warrant fails.
+- **Input:** `query`, `data_json`, `claim_json`, `warrant_json`, `backing_json`
+- **Output:** JSON with `rebuttal` + `qualifier`
+- **Directive:** "You are an adversary. DESTROY this argument."
 
 ### Phase 4: `render_verdict`
+**Final judgment on the complete argument chain**
 
-Final judgment on the complete 6-part chain.
-
-*   **Input:** All 6 component JSONs + `query`
-*   **Output:** Structured prompt → JSON with verdict
-
-Verdicts: **SUSTAINED** | **OVERRULED** | **REMANDED**
+- **Input:** All 6 component JSONs + `query`
+- **Output:** JSON with `verdict`
+- **Verdicts:** `sustained` | `overruled` | `remanded`
 
 ### Phase 5: `format_analysis_report` (Optional)
+**Transforms JSON into human-readable markdown**
 
-Transforms the complete analysis into a readable markdown report.
+- **Input:** All 7 component JSONs (including verdict) + `query`
+- **Output:** Formatted markdown report
 
-*   **Input:** All 7 component JSONs (including verdict) + `query`
-*   **Output:** Structured prompt → Human-readable markdown report
+---
 
-Use this after `render_verdict` to get a nicely formatted summary with headings, sections, and proper styling.
+## 🔬 Execution Flow
 
-## Execution Flow (The "Toulmin Loop")
+Each phase consists of **two distinct steps**:
 
-Each phase consists of two distinct steps:
-1.  **Tool Call:** The MCP server returns a strict system directive (Prompt).
-2.  **LLM Generation:** The LLM follows that directive to generate structured JSON.
+1. **Tool Call:** MCP server returns a strict system directive (Prompt)
+2. **LLM Generation:** LLM follows directive to generate structured JSON
 
-**Query:** "Would immortality be a curse?"
+### Example: "Would immortality be a curse?"
 
-### Phase 1: Grounding
-1.  **Tool Call:** `initiate_toulmin_sequence(query)`
-2.  **LLM Generates:**
-    *   **DATA:** Terror Management Theory, hedonic adaptation research
-    *   **CLAIM:** "Immortality constitutes a psychological curse..."
+#### Phase 1: Grounding
+```
+Tool Call: initiate_toulmin_sequence(query)
 
-### Phase 2: Logic Bridge
-3.  **Tool Call:** `inject_logic_bridge(query, data, claim)`
-4.  **LLM Generates:**
-    *   **WARRANT:** "If well-being depends on mortality awareness..."
-    *   **BACKING:** Heidegger, Becker, empirical TMT research
-    *   *Strength Check:* "strong" ✓
+LLM Generates:
+  DATA: Terror Management Theory, hedonic adaptation research
+  CLAIM: "Immortality constitutes a psychological curse..."
+```
 
-### Phase 3: Stress Test
-5.  **Tool Call:** `stress_test_argument(...)`
-6.  **LLM Generates:**
-    *   **REBUTTAL:** Category error (mortal→immortal psychology)
-    *   **QUALIFIER:** "possibly" (45% confidence)
+#### Phase 2: Logic Bridge
+```
+Tool Call: inject_logic_bridge(query, data, claim)
 
-### Phase 4: Judgment
-7.  **Tool Call:** `render_verdict(...)`
-8.  **LLM Generates:**
-    *   **VERDICT:** "REMANDED" - insufficient empirical grounding
+LLM Generates:
+  WARRANT: "If well-being depends on mortality awareness..."
+  BACKING: Heidegger, Becker, empirical TMT research
+  Strength Check: "strong" ✓
+```
 
-See `examples/` for complete JSON traces.
+#### Phase 3: Stress Test
+```
+Tool Call: stress_test_argument(...)
 
-## Why This Exists
+LLM Generates:
+  REBUTTAL: Category error (mortal→immortal psychology)
+  QUALIFIER: "possibly" (45% confidence)
+```
 
-LLMs tend to hedge, compromise, or give "balanced" answers without confronting genuine contradictions. Toulmini forces separation:
+#### Phase 4: Judgment
+```
+Tool Call: render_verdict(...)
 
-*   **No hedging in claims** — qualifiers come later
-*   **No skipping steps** — can't render verdict without rebuttal
-*   **Hard rejection of weak backing** — stops the chain if support is speculative
-*   **Adversarial stress testing** — must find "black swan" edge cases
+LLM Generates:
+  VERDICT: "REMANDED" - insufficient empirical grounding
+```
 
-## Limitations
+See [examples/](examples/) for complete JSON traces.
+
+---
+
+## ⚠️ Limitations
 
 ### Citation Reliability
 
-Toulmini asks LLMs to provide citations with sources and references. However, **without integrated web search, citations are drawn from the LLM's training data** and may be:
+Toulmini asks LLMs to provide citations with sources and references. However, **without integrated web search**, citations are drawn from the LLM's training data and may be:
 
 - **Outdated** — Training data has a cutoff date
 - **Hallucinated** — LLMs can fabricate plausible-sounding citations
@@ -222,30 +419,36 @@ Toulmini asks LLMs to provide citations with sources and references. However, **
 
 **For reliable citations**, pair Toulmini with an LLM that has web search capabilities (e.g., Claude with web search, GPT with browsing). The prompts ask for URLs only "if known with certainty" to minimize hallucination, but this is not foolproof.
 
-**Bottom line**: Treat citations as *leads to investigate*, not verified sources. Always verify important references independently.
+**Bottom line:** Treat citations as *leads to investigate*, not verified sources. Always verify important references independently.
 
-## Architectural Constraints
+### Failure Modes
 
-| Constraint | Enforcement |
-| :--- | :--- |
-| **No external API calls** | Local-only, your LLM only |
-| **Strict schemas** | Pydantic validation on all components |
-| **Sequential dependencies** | Phase N requires Phases 1..N-1 |
-| **JSON-only output** | Prompts forbid conversational responses |
-| **Stderr logging** | STDIO-safe (no stdout pollution) |
+| Condition | Result |
+|-----------|--------|
+| `warrant.strength == "weak"` | Chain terminates (Phase 2) |
+| `backing.strength == "weak"` | Chain terminates (Phase 2) |
+| `rebuttal.strength == "absolute"` | Verdict must be "overruled" |
+| `qualifier.confidence_pct < 30` | Verdict should be "overruled" or "remanded" |
+| Missing prior phase output | Tool returns error JSON |
 
-## Project Structure
+---
+
+## 📁 Project Structure
 
 ```
 toulmini/
-├── pyproject.toml
+├── pyproject.toml          # Package configuration
 ├── README.md
-├── verify_toulmini.py      # Verification script
+├── GEMINI.md               # Agent instructions (v1.1.0+)
+├── scripts/
+│   └── validate_mcp.py     # Validation script
+├── docs/                   # Comprehensive documentation
 ├── examples/               # Full reasoning traces
+│   └── council_integration.json  # Council example (v1.1.0+)
 └── src/toulmini/
     ├── __init__.py
     ├── server.py           # MCP entry point (FastMCP)
-    ├── prompts.py          # 5 prompt templates (4 JSON-forcing + 1 report formatter)
+    ├── prompts.py          # 5 prompt templates
     └── models/
         ├── __init__.py
         ├── base.py         # Citation, Literal types
@@ -253,167 +456,78 @@ toulmini/
         └── chain.py        # ToulminChain aggregate
 ```
 
-## Failure Modes
+---
 
-| Condition | Result |
-| :--- | :--- |
-| `warrant.strength == "weak"` | Chain terminates |
-| `backing.strength == "weak"` | Chain terminates |
-| `rebuttal.strength == "absolute"` | Verdict must be "overruled" |
-| `qualifier.confidence_pct < 30` | Verdict should be "overruled" or "remanded" |
-| Missing prior phase output | Tool returns error JSON |
-
-## Installation & Configuration
+## 🧪 Development
 
 ### Prerequisites
 
 - Python 3.10+
-- pip or uv
+- `pip` or `uv`
 
-### Install Toulmini
+### Install for Development
 
-```bash
-pip install toulmini
-```
-
-Or for development:
 ```bash
 git clone https://github.com/Hmbown/Toulmini.git
 cd Toulmini
 pip install -e .
 ```
 
-### Configure Your MCP Client
-
-<details>
-<summary><strong>Claude Code (CLI)</strong></summary>
-
-The fastest way to add Toulmini:
-
-```bash
-claude mcp add toulmini --scope user -- python -m toulmini.server
-```
-
-**Verify it's connected:**
-```bash
-claude mcp list
-```
-
-Then in any Claude Code session, type `/mcp` to see Toulmini's status.
-
-**Alternative scopes:**
-- `--scope user` — Available in all your projects
-- `--scope project` — Shared with your team via `.mcp.json`
-- No flag — Local to current project only
-
-</details>
-
-<details>
-<summary><strong>Claude Desktop (macOS/Windows/Linux)</strong></summary>
-
-**1. Find your config file:**
-
-| Platform | Location |
-|----------|----------|
-| macOS | `~/Library/Application Support/Claude/claude_desktop_config.json` |
-| Windows | `%APPDATA%\Claude\claude_desktop_config.json` |
-| Linux | `~/.config/Claude/claude_desktop_config.json` |
-
-**2. Add Toulmini to the config:**
-
-```json
-{
-  "mcpServers": {
-    "toulmini": {
-      "command": "python",
-      "args": ["-m", "toulmini.server"]
-    }
-  }
-}
-```
-
-**3. Restart Claude Desktop completely** (not just refresh).
-
-**4. Verify:** Ask Claude to use one of the Toulmini tools, or check the Developer Console.
-
-</details>
-
-<details>
-<summary><strong>Cursor</strong></summary>
-
-**1. Open Cursor Settings** → Features → MCP Servers
-
-**2. Add a new server** with this configuration:
-
-```json
-{
-  "toulmini": {
-    "command": "python",
-    "args": ["-m", "toulmini.server"]
-  }
-}
-```
-
-**3. Save and restart Cursor.**
-
-</details>
-
-<details>
-<summary><strong>Windsurf</strong></summary>
-
-**1. Open Windsurf Settings** → MCP Configuration
-
-**2. Add Toulmini:**
-
-```json
-{
-  "mcpServers": {
-    "toulmini": {
-      "command": "python",
-      "args": ["-m", "toulmini.server"]
-    }
-  }
-}
-```
-
-**3. Restart Windsurf.**
-
-</details>
-
-### Verify Installation
-
-Run the verification script:
-```bash
-python verify_toulmini.py
-```
-
-Or test manually by asking your AI assistant:
-> "Use the initiate_toulmin_sequence tool to analyze: Would immortality be a curse?"
-
-### Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Server not found | Ensure `toulmini` is installed: `pip show toulmini` |
-| Connection failed | Check Python is in your PATH |
-| JSON parse error | Validate your config file syntax |
-| Tools not appearing | Restart your client completely |
-
-## Inspired By
-
-*   **Hegelion** — Dialectical reasoning (thesis/antithesis/synthesis)
-*   Stephen Toulmin, *The Uses of Argument* (1958)
-
-## License
-
-MIT
-
-## Development
-
-### Running Tests
-
-To run the tests, install `pytest` and `mcp[cli]`, then run:
+### Run Tests
 
 ```bash
 PYTHONPATH=src pytest
 ```
+
+### Run Validation
+
+```bash
+python scripts/validate_mcp.py
+```
+
+---
+
+## 🤝 Contributing
+
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+**Key areas for contribution:**
+- Additional example traces in `examples/`
+- Test coverage improvements
+- Documentation enhancements
+- Bug reports and feature requests
+
+---
+
+## 🌟 Inspiration
+
+Toulmini is inspired by:
+
+- **[Hegelion](https://github.com/Hmbown/Hegelion)** — Dialectical reasoning engine (Thesis → Antithesis → Synthesis)
+- **Stephen Toulmin** — *The Uses of Argument* (1958)
+
+---
+
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+## 🔗 Links
+
+- **Website:** https://toulmini-web.pages.dev/
+- **Documentation:** https://github.com/Hmbown/Toulmini/tree/main/docs
+- **PyPI:** https://pypi.org/project/toulmini/
+- **GitHub:** https://github.com/Hmbown/Toulmini
+- **Issues:** https://github.com/Hmbown/Toulmini/issues
+
+---
+
+<div align="center">
+
+**Built with ❤️ for rigorous reasoning**
+
+[⬆ Back to Top](#-toulmini)
+
+</div>
