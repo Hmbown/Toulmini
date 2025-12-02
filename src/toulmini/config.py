@@ -139,12 +139,10 @@ def get_config() -> Config:
     config = Config(
         # Feature toggles
         enable_council=_get_env_bool("TOULMINI_ENABLE_COUNCIL", True),
-
         # Circuit breaker controls
         strict_mode=_get_env_bool("TOULMINI_STRICT_MODE", True),
         fail_on_weak_warrant=_get_env_bool("TOULMINI_FAIL_ON_WEAK_WARRANT", True),
         fail_on_weak_backing=_get_env_bool("TOULMINI_FAIL_ON_WEAK_BACKING", True),
-
         # Debugging
         debug=_get_env_bool("TOULMINI_DEBUG", False),
         log_level=_get_env_str("TOULMINI_LOG_LEVEL", "INFO").upper(),

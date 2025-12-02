@@ -81,7 +81,9 @@ def get_project_root() -> Path:
     return package_dir
 
 
-def generate_config(python_path: str, project_root: Path, is_installed: bool) -> Dict[str, dict]:
+def generate_config(
+    python_path: str, project_root: Path, is_installed: bool
+) -> Dict[str, dict]:
     """Generate the MCP config dictionary."""
 
     env: Dict[str, str] = {}
@@ -136,11 +138,15 @@ def print_setup_instructions(dry_run: bool = False) -> None:
     print("  - consult_field_experts (Helper: Council of Experts)")
 
     print("\nCommon config paths:")
-    print("  macOS Claude Desktop: ~/Library/Application Support/Claude/claude_desktop_config.json")
+    print(
+        "  macOS Claude Desktop: ~/Library/Application Support/Claude/claude_desktop_config.json"
+    )
     print("  Cursor:               ~/.cursor/mcp_config.json")
     print("  Windsurf:             ~/.codeium/windsurf/mcp_config.json")
 
-    print("\n⚠️  Restart Required: Quit and reopen Claude Desktop after modifying the config.")
+    print(
+        "\n⚠️  Restart Required: Quit and reopen Claude Desktop after modifying the config."
+    )
 
     if not is_installed:
         print(f"\nℹ️  NOTE: Detected source installation at {project_root}")
@@ -149,7 +155,9 @@ def print_setup_instructions(dry_run: bool = False) -> None:
         print("\nℹ️  NOTE: Detected installed package.")
 
     print("\nFor automated setup, run:")
-    print('  toulmini-setup-mcp --write "$HOME/Library/Application Support/Claude/claude_desktop_config.json"')
+    print(
+        '  toulmini-setup-mcp --write "$HOME/Library/Application Support/Claude/claude_desktop_config.json"'
+    )
 
 
 def _write_config(target: Path, snippet: dict) -> None:
@@ -162,7 +170,9 @@ def _write_config(target: Path, snippet: dict) -> None:
         try:
             existing = json.loads(target.read_text(encoding="utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError):
-            print(f"⚠️  Warning: Existing config at {target} is invalid. Creating new file.")
+            print(
+                f"⚠️  Warning: Existing config at {target} is invalid. Creating new file."
+            )
             existing = {}
 
         merged = existing.get("mcpServers", {})

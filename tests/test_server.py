@@ -132,6 +132,7 @@ def test_format_analysis_report():
     )
     assert '{"error": "INCOMPLETE_CHAIN"}' in result_error
 
+
 def test_consult_field_experts_respects_config():
     set_config_value("enable_council", False)
     try:
