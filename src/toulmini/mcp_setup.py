@@ -6,7 +6,7 @@ import json
 import site
 import sys
 from pathlib import Path
-from typing import Dict
+from typing import Any, Dict
 
 
 USAGE_NOTE = """
@@ -91,7 +91,7 @@ def generate_config(
     if not is_installed:
         env["PYTHONPATH"] = str(project_root)
 
-    config = {
+    config: Dict[str, Any] = {
         "mcpServers": {
             "toulmini": {
                 "command": python_path,
